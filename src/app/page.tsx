@@ -64,7 +64,7 @@ export default function HomePage() {
             alt={siteConfig.owner.name}
             width={160}
             height={160}
-            className="rounded-full ring-4 ring-border shadow-lg"
+            className="w-40 h-40 rounded-full object-cover ring-4 ring-border shadow-lg"
           />
         </div>
       </section>
