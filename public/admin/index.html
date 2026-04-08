@@ -5,9 +5,111 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
   <title>Content Manager</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <!-- Must set MANUAL_INIT BEFORE loading CMS script -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    CMS.init({
+      config: {
+        backend: {
+          name: "github",
+          repo: "bug-zi/blog",
+          branch: "main",
+          base_url: "https://wiki.debugzi.com",
+          auth_endpoint: "/api/auth"
+        },
+        media_folder: "public/images",
+        public_folder: "/images",
+        locale: "zh_Hans",
+        collections: [
+          {
+            name: "posts",
+            label: "\u6587\u7AE0",
+            label_singular: "\u6587\u7AE0",
+            folder: "src/content/posts",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "\u6807\u9898", name: "title", widget: "string" },
+              { label: "\u53D1\u5E03\u65E5\u671F", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "\u7B80\u4ECB", name: "description", widget: "text", required: false },
+              { label: "\u5206\u7C7B", name: "category", widget: "select", required: false, options: [
+                { label: "\u7CBE\u9009", value: "featured" },
+                { label: "\u6708\u520A", value: "monthly" },
+                { label: "\u5065\u5EB7", value: "health" },
+                { label: "\u65C5\u884C", value: "travel" },
+                { label: "\u597D\u7269", value: "goods" },
+                { label: "\u5DE5\u5177\u5206\u4EAB", value: "tools" },
+                { label: "coding", value: "coding" },
+                { label: "AI", value: "ai" },
+                { label: "\u7B97\u6CD5\u4F18\u5316", value: "algorithm" },
+                { label: "\u65F6\u95F4", value: "time" },
+                { label: "\u6210\u957F", value: "growth" },
+                { label: "\u6742\u9879", value: "misc" }
+              ]},
+              { label: "\u6807\u7B7E", name: "tags", widget: "list", required: false },
+              { label: "\u7CBE\u9009", name: "featured", widget: "boolean", default: false, required: false },
+              { label: "\u5C01\u9762\u56FE", name: "cover", widget: "image", required: false },
+              { label: "\u6B63\u6587", name: "body", widget: "markdown" }
+            ]
+          },
+          {
+            name: "works",
+            label: "\u4F5C\u54C1",
+            label_singular: "\u4F5C\u54C1",
+            folder: "src/content/works",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "\u6807\u9898", name: "title", widget: "string" },
+              { label: "\u53D1\u5E03\u65E5\u671F", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "\u7B80\u4ECB", name: "description", widget: "text", required: false },
+              { label: "\u5206\u7C7B", name: "category", widget: "select", required: false, options: [
+                { label: "\u8F6F\u4EF6\u9879\u76EE", value: "software" },
+                { label: "\u97F3\u4E50\u521B\u4F5C", value: "music" }
+              ]},
+              { label: "\u6807\u7B7E", name: "tags", widget: "list", required: false },
+              { label: "\u7CBE\u9009", name: "featured", widget: "boolean", default: false, required: false },
+              { label: "\u5C01\u9762\u56FE", name: "cover", widget: "image", required: false },
+              { label: "\u6B63\u6587", name: "body", widget: "markdown" }
+            ]
+          },
+          {
+            name: "stars",
+            label: "\u6536\u85CF",
+            label_singular: "\u6536\u85CF",
+            folder: "src/content/stars",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "\u6807\u9898", name: "title", widget: "string" },
+              { label: "\u53D1\u5E03\u65E5\u671F", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "\u7B80\u4ECB", name: "description", widget: "text", required: false },
+              { label: "\u5206\u7C7B", name: "category", widget: "select", required: false, options: [
+                { label: "\u6536\u85CF\u7F51\u7AD9", value: "website" },
+                { label: "\u6536\u85CF\u6587\u7AE0", value: "article" },
+                { label: "\u6536\u85CF\u97F3\u4E50", value: "music" },
+                { label: "\u6536\u85CF\u5F71\u89C6", value: "movie" }
+              ]},
+              { label: "\u94FE\u63A5", name: "link", widget: "string", required: false },
+              { label: "\u5C01\u9762\u56FE", name: "cover", widget: "image", required: false },
+              { label: "\u6B63\u6587", name: "body", widget: "markdown", required: false }
+            ]
+          }
+        ]
+      }
+    });
+  </script>
 </body>
 </html>
