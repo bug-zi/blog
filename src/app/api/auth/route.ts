@@ -51,14 +51,22 @@ export async function GET(req: NextRequest) {
     const tokenData = await tokenResponse.json();
 
     if (tokenData.error || !tokenData.access_token) {
+      const errContent = JSON.stringify({ message: tokenData.error_description || tokenData.error || "Token exchange failed" });
       const html = `<!DOCTYPE html><html><body>
         <h2>OAuth Error</h2>
         <p>${tokenData.error_description || tokenData.error || "Token exchange failed"}</p>
         <script>
-        window.opener.postMessage(
-          'authorization:github:error:' + JSON.stringify({ message: '${tokenData.error || "unknown"}' }),
-          '*'
-        );
+        (function() {
+          var receiveMessage = function(message) {
+            window.opener.postMessage(
+              'authorization:github:error:' + ${JSON.stringify(JSON.stringify({ message: tokenData.error || "unknown" }))},
+              message.origin
+            );
+            window.removeEventListener("message", receiveMessage, false);
+          };
+          window.addEventListener("message", receiveMessage, false);
+          window.opener.postMessage("authorizing:github", "*");
+        })();
         </script>
       </body></html>`;
       return new NextResponse(html, {
@@ -66,7 +74,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Step 3: Send token back to Decap CMS
+    // Step 3: Send token back to Decap CMS via handshake protocol
     const token = tokenData.access_token;
     const html = `<!DOCTYPE html>
 <html>
@@ -75,11 +83,17 @@ export async function GET(req: NextRequest) {
 <p>Logging in...</p>
 <script>
 (function() {
-  var msg = 'authorization:github:success:' + JSON.stringify({ token: "${token}", provider: "github" });
-  if (window.opener) {
-    window.opener.postMessage(msg, "*");
-  }
-  setTimeout(function() { window.close(); }, 1000);
+  var tokenData = ${JSON.stringify({ token, provider: "github" })};
+  var receiveMessage = function(message) {
+    window.opener.postMessage(
+      'authorization:github:success:' + JSON.stringify(tokenData),
+      message.origin
+    );
+    window.removeEventListener("message", receiveMessage, false);
+    setTimeout(function() { window.close(); }, 500);
+  };
+  window.addEventListener("message", receiveMessage, false);
+  window.opener.postMessage("authorizing:github", "*");
 })();
 </script>
 </body>
