@@ -1,34 +1,24 @@
-import { getPostBySlug, getPosts } from "@/lib/posts";
+import { getPostBySlug, getStars } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
-
-// Force rebuild - 2026-04-09 20:30
 
 // Enable dynamic params for all slugs in dev mode
 export const dynamicParams = true;
 export const dynamic = "force-dynamic";
 
-// generateStaticParams only for production build
-// In dev mode, use dynamic rendering
 export function generateStaticParams() {
-  const posts = getPosts();
-  console.log("[generateStaticParams] Posts:", posts.map(p => p.slug));
-  return posts.map((post) => ({ slug: post.slug }));
+  return getStars().map((star) => ({ slug: star.slug }));
 }
 
-export default async function PassageDetailPage({
+export default async function StarDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  console.log("[PassageDetailPage] Rendering slug:", slug);
-  const data = getPostBySlug(slug, "posts");
-  if (!data) {
-    console.log("[PassageDetailPage] Not found:", slug);
-    notFound();
-  }
+  const data = getPostBySlug(slug, "stars");
+  if (!data) notFound();
 
   const { meta, content } = data;
 
@@ -54,10 +44,10 @@ export default async function PassageDetailPage({
       {/* Header */}
       <header className="mb-12">
         <Link
-          href="/passage"
+          href="/star"
           className="text-sm text-muted hover:text-accent transition-colors mb-6 inline-block"
         >
-          ← 返回文章列表
+          ← 返回收藏列表
         </Link>
         <h1 className="text-3xl font-bold mt-4 mb-3">{meta.title}</h1>
         <div className="flex items-center gap-3 text-sm text-muted">
@@ -100,10 +90,10 @@ export default async function PassageDetailPage({
       {/* Footer nav */}
       <div className="mt-16 pt-8 border-t border-border">
         <Link
-          href="/passage"
+          href="/star"
           className="text-sm text-muted hover:text-accent transition-colors"
         >
-          ← 返回文章列表
+          ← 返回收藏列表
         </Link>
       </div>
     </article>

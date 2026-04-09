@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { siteConfig } from "@/lib/config";
+import { CoffeeButton } from "@/components/CoffeeButton";
 
 export function Footer() {
   return (
@@ -8,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <h3 className="font-bold text-lg mb-2">{siteConfig.name}</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-400">{siteConfig.name}</h3>
             <p className="text-sm text-white leading-relaxed">
               {siteConfig.description}
             </p>
@@ -16,15 +17,15 @@ export function Footer() {
 
           {/* About */}
           <div>
-            <h4 className="font-semibold text-sm mb-3">关于</h4>
+            <h4 className="font-semibold text-sm mb-3 text-gray-400">关于</h4>
             <ul className="space-y-2 text-sm text-white">
               <li>
-                <Link href="/about" className="hover:text-foreground transition-colors">
+                <Link href="/about" className="hover:bg-white/10 rounded px-2 py-1 -mx-2 transition-colors inline-block">
                   关于本站
                 </Link>
               </li>
               <li>
-                <Link href="/about#author" className="hover:text-foreground transition-colors">
+                <Link href="/about#author" className="hover:bg-white/10 rounded px-2 py-1 -mx-2 transition-colors inline-block">
                   关于站长
                 </Link>
               </li>
@@ -33,17 +34,17 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-sm mb-3">联系</h4>
+            <h4 className="font-semibold text-sm mb-3 text-gray-400">联系</h4>
             <ul className="space-y-2 text-sm text-white">
               <li>
-                <Link href="/more/message" className="hover:text-foreground transition-colors">
+                <Link href="/more/message" className="hover:bg-white/10 rounded px-2 py-1 -mx-2 transition-colors inline-block">
                   写留言
                 </Link>
               </li>
               <li>
                 <a
                   href="mailto:hello@debugzi.com"
-                  className="hover:text-foreground transition-colors"
+                  className="hover:bg-white/10 rounded px-2 py-1 -mx-2 transition-colors inline-block"
                 >
                   发邮件
                 </a>
@@ -53,15 +54,13 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h4 className="font-semibold text-sm mb-3">支持</h4>
+            <h4 className="font-semibold text-sm mb-3 text-gray-400">支持</h4>
             <ul className="space-y-2 text-sm text-white">
               <li>
-                <Link href="/more/coffee" className="hover:text-foreground transition-colors">
-                  请喝咖啡 ☕
-                </Link>
+                <CoffeeButton />
               </li>
               <li>
-                <Link href="/friends" className="hover:text-foreground transition-colors">
+                <Link href="/friends" className="hover:bg-white/10 rounded px-2 py-1 -mx-2 transition-colors inline-block">
                   友情链接
                 </Link>
               </li>

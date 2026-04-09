@@ -9,7 +9,7 @@ export const siteConfig = {
     avatar: "/images/头像2.jpg",
     bio: "喜欢在旅行时创作的 <Planner>",
     motto: "去爱，去失去，要不负相遇。",
-    startDate: "2025-01-01", // 建站日期，用于计算建站天数
+    startDate: "2026-04-08", // 建站日期，用于计算建站天数
   },
   nav: [
     { label: "首页", href: "/" },
@@ -20,12 +20,11 @@ export const siteConfig = {
     { label: "更多", href: "/more" },
   ],
   social: [
-    { name: "GitHub", url: "https://github.com/debugzi", icon: "github" },
+    { name: "GitHub", url: "https://github.com/bug-zi/", icon: "github" },
+    { name: "网易云音乐", url: "https://music.163.com/#/user/home?id=1930260407", icon: "netease" },
+    { name: "小红书", url: "https://www.xiaohongshu.com/user/profile/60f93e7f000000000100b55e", icon: "xiaohongshu" },
     { name: "微信", url: "#", icon: "wechat" },
     { name: "QQ", url: "#", icon: "qq" },
-    { name: "钉钉", url: "#", icon: "dingtalk" },
-    { name: "网易云音乐", url: "#", icon: "netease" },
-    { name: "小红书", url: "#", icon: "xiaohongshu" },
   ],
   friends: [] as {
     name: string;
@@ -74,7 +73,7 @@ export const siteConfig = {
       { name: "收藏影视", slug: "movie" },
     ],
     work: [
-      { name: "软件项目作品", slug: "software" },
+      { name: "软件创作", slug: "software" },
       { name: "音乐创作", slug: "music" },
     ],
   },

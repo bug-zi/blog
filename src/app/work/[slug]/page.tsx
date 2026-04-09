@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 
+// Enable dynamic params for all slugs in dev mode
+export const dynamicParams = true;
+export const dynamic = "force-dynamic";
+
 export function generateStaticParams() {
   return getWorks().map((work) => ({ slug: work.slug }));
 }
@@ -35,6 +39,8 @@ export default async function WorkDetailPage({
       </div>
 
       <article className="mx-auto max-w-3xl px-4 py-16 relative">
+        {/* Semi-transparent background card for readability over dark bg */}
+        <div className="absolute inset-0 rounded-2xl bg-background/80 dark:bg-background/70 backdrop-blur-sm" style={{ zIndex: -1 }} />
       {/* Header */}
       <header className="mb-12">
         <Link

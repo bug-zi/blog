@@ -21,9 +21,11 @@ export default function PhotosPage() {
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-16 relative">
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-white mb-2">照片墙</h1>
+        <p className="text-sm text-white/70">记录生活中的美好瞬间</p>
+      </div>
       <div className="relative rounded-2xl bg-black/20 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10">
-      <h1 className="text-2xl font-bold mb-2">照片墙</h1>
-      <p className="text-sm text-muted mb-8">记录生活中的美好瞬间</p>
 
       {photos.length === 0 ? (
         <>

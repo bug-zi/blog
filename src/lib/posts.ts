@@ -12,6 +12,8 @@ export interface PostMeta {
   featured?: boolean;
   cover?: string;
   type: "post" | "work" | "star";
+  status?: string;
+  url?: string;
 }
 
 export interface SentenceMeta {
@@ -51,6 +53,8 @@ function readMdxFiles(subDir: string, type: PostMeta["type"]): PostMeta[] {
         tags: data.tags ?? [],
         featured: data.featured ?? false,
         cover: data.cover,
+        status: data.status,
+        url: data.url,
         type,
       };
     })
@@ -69,13 +73,21 @@ export function getStars(): PostMeta[] {
   return readMdxFiles("stars", "star");
 }
 
+// Map subdirectory to post type
+const SUBDIR_TO_TYPE: Record<string, PostMeta["type"]> = {
+  posts: "post",
+  works: "work",
+  stars: "star",
+};
+
 export function getPostBySlug(
   slug: string,
   subDir: string
 ): { meta: PostMeta; content: string } | null {
+  const decodedSlug = decodeURIComponent(slug);
   const dir = path.join(CONTENT_DIR, subDir);
-  const mdxPath = path.join(dir, `${slug}.mdx`);
-  const mdPath = path.join(dir, `${slug}.md`);
+  const mdxPath = path.join(dir, `${decodedSlug}.mdx`);
+  const mdPath = path.join(dir, `${decodedSlug}.md`);
   const filePath = fs.existsSync(mdxPath) ? mdxPath : mdPath;
 
   if (!fs.existsSync(filePath)) return null;
@@ -85,15 +97,17 @@ export function getPostBySlug(
 
   return {
     meta: {
-      slug,
-      title: data.title ?? slug,
+      slug: decodedSlug,
+      title: data.title ?? decodedSlug,
       date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
       description: data.description,
       category: data.category,
       tags: data.tags ?? [],
       featured: data.featured ?? false,
       cover: data.cover,
-      type: "post",
+      status: data.status,
+      url: data.url,
+      type: SUBDIR_TO_TYPE[subDir] ?? "post",
     },
     content,
   };

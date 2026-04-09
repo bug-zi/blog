@@ -13,6 +13,8 @@ npm run lint      # ESLint
 
 No test framework is configured.
 
+**Important**: If a task requires stopping and restarting `npm run dev`, do NOT execute the restart command yourself. Instead, inform the user that they need to restart the dev server manually.
+
 ## Architecture
 
 **Content flow**: MDX files in `src/content/{posts,works,stars}/` → `src/lib/posts.ts` reads and parses them with `gray-matter` → Next.js pages consume them via SSG (`generateStaticParams`).
