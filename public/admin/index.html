@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Content Manager</title>
+</head>
+<body>
+  <!-- Must set MANUAL_INIT BEFORE loading CMS script -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    CMS.init({
+      config: {
+        backend: {
+          name: "github",
+          repo: "bug-zi/blog",
+          branch: "main",
+          base_url: "https://wiki.debugzi.com",
+          auth_endpoint: "/api/auth"
+        },
+        media_folder: "public/images",
+        public_folder: "/images",
+        locale: "zh_Hans",
+        collections: [
+          {
+            name: "posts",
+            label: "文章",
+            label_singular: "文章",
+            folder: "src/content/posts",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "标题", name: "title", widget: "string" },
+              { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "简介", name: "description", widget: "text", required: false },
+              { label: "分类", name: "category", widget: "select", required: false, options: [
+                { label: "精选", value: "featured" },
+                { label: "月刊", value: "monthly" },
+                { label: "健康", value: "health" },
+                { label: "旅行", value: "travel" },
+                { label: "好物", value: "goods" },
+                { label: "工具分享", value: "tools" },
+                { label: "coding", value: "coding" },
+                { label: "AI", value: "ai" },
+                { label: "算法优化", value: "algorithm" },
+                { label: "时间", value: "time" },
+                { label: "成长", value: "growth" },
+                { label: "杂项", value: "misc" }
+              ]},
+              { label: "标签", name: "tags", widget: "list", required: false },
+              { label: "精选", name: "featured", widget: "boolean", default: false, required: false },
+              { label: "封面图", name: "cover", widget: "image", required: false },
+              { label: "正文", name: "body", widget: "markdown" }
+            ]
+          },
+          {
+            name: "works",
+            label: "作品",
+            label_singular: "作品",
+            folder: "src/content/works",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "标题", name: "title", widget: "string" },
+              { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "简介", name: "description", widget: "text", required: false },
+              { label: "分类", name: "category", widget: "select", required: false, options: [
+                { label: "软件项目", value: "software" },
+                { label: "音乐创作", value: "music" }
+              ]},
+              { label: "标签", name: "tags", widget: "list", required: false },
+              { label: "精选", name: "featured", widget: "boolean", default: false, required: false },
+              { label: "封面图", name: "cover", widget: "image", required: false },
+              { label: "正文", name: "body", widget: "markdown" }
+            ]
+          },
+          {
+            name: "stars",
+            label: "收藏",
+            label_singular: "收藏",
+            folder: "src/content/stars",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "标题", name: "title", widget: "string" },
+              { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "简介", name: "description", widget: "text", required: false },
+              { label: "分类", name: "category", widget: "select", required: false, options: [
+                { label: "收藏网站", value: "website" },
+                { label: "收藏文章", value: "article" },
+                { label: "收藏音乐", value: "music" },
+                { label: "收藏影视", value: "movie" }
+              ]},
+              { label: "链接", name: "link", widget: "string", required: false },
+              { label: "封面图", name: "cover", widget: "image", required: false },
+              { label: "正文", name: "body", widget: "markdown", required: false }
+            ]
+          },
+          {
+            name: "sentences",
+            label: "一言",
+            label_singular: "句子",
+            folder: "src/content/sentences",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "句子内容", name: "title", widget: "string" },
+              { label: "添加日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "作者/出处", name: "author", widget: "string", required: false },
+              { label: "备注", name: "body", widget: "markdown", required: false }
+            ]
+          },
+          {
+            name: "photos",
+            label: "照片墙",
+            label_singular: "照片",
+            folder: "src/content/photos",
+            create: true,
+            delete: true,
+            extension: "mdx",
+            format: "yaml-frontmatter",
+            slug: "{{slug}}",
+            fields: [
+              { label: "标题", name: "title", widget: "string" },
+              { label: "拍摄日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+              { label: "图片", name: "image", widget: "image" },
+              { label: "描述", name: "description", widget: "text", required: false },
+              { label: "备注", name: "body", widget: "markdown", required: false }
+            ]
+          }
+        ]
+      }
+    });
+  </script>
+</body>
+</html>
