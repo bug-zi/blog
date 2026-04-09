@@ -30,17 +30,15 @@ export function Navbar() {
 
   const isHomePage = pathname === "/";
 
-  // Scroll detection for transparent navbar on home page
+  // Scroll detection for transparent navbar on all pages
   useEffect(() => {
-    if (!isHomePage) return;
-
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHomePage]);
+  }, []);
 
   // Close more menu when clicking outside
   useEffect(() => {
@@ -56,14 +54,12 @@ export function Navbar() {
     }
   }, [moreOpen]);
 
-  // Dynamic navbar styles based on page and scroll state
-  const navbarClasses = isHomePage
-    ? `sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "border-b border-white/10 bg-black/20 backdrop-blur-md"
-          : "border-b-0 bg-transparent"
-      }`
-    : "sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md";
+  // Dynamic navbar styles - all pages start transparent, turn dark on scroll
+  const navbarClasses = `sticky top-0 z-50 transition-all duration-300 ${
+    !scrolled
+      ? "border-b-0 bg-transparent"
+      : "border-b border-white/10 bg-black/20 backdrop-blur-md"
+  }`;
 
   return (
     <header className={navbarClasses}>
@@ -80,7 +76,7 @@ export function Navbar() {
               (e.target as HTMLImageElement).style.display = "none";
             }}
           />
-          <span className={`font-bold text-sm hidden sm:inline ${isHomePage && !scrolled ? "text-white" : ""}`}>
+          <span className={`font-bold text-sm hidden sm:inline ${!scrolled ? "text-white" : "text-white/90"}`}>
             {siteConfig.name}
           </span>
         </Link>
@@ -97,11 +93,7 @@ export function Navbar() {
                   <div ref={moreRef}>
                     <button
                       onClick={() => setMoreOpen(!moreOpen)}
-                      className={`px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1 ${
-                        isHomePage && !scrolled
-                          ? "text-white/80 hover:text-white hover:bg-white/10"
-                          : "text-muted hover:text-foreground hover:bg-card-hover"
-                      }`}
+                      className={`px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1 text-white/80 hover:text-white hover:bg-white/10`}
                     >
                       {item.label}
                       <svg
@@ -130,11 +122,7 @@ export function Navbar() {
                               <Link
                                 href={moreItem.href}
                                 onClick={() => setMoreOpen(false)}
-                                className={`block px-4 py-2.5 text-sm transition-colors ${
-                                  isHomePage && !scrolled
-                                    ? "text-white/80 hover:text-white hover:bg-white/10"
-                                    : "text-muted hover:text-foreground hover:bg-card-hover"
-                                }`}
+                                className="block px-4 py-2.5 text-sm transition-colors text-white/80 hover:text-white hover:bg-white/10"
                               >
                                 {moreItem.title}
                               </Link>
@@ -152,11 +140,7 @@ export function Navbar() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                    isHomePage && !scrolled
-                      ? "text-white/80 hover:text-white hover:bg-white/10"
-                      : "text-muted hover:text-foreground hover:bg-card-hover"
-                  }`}
+                  className="px-3 py-1.5 rounded-lg text-sm transition-colors text-white/80 hover:text-white hover:bg-white/10"
                 >
                   {item.label}
                 </Link>
@@ -170,11 +154,7 @@ export function Navbar() {
           {/* Search */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className={`p-2 rounded-full transition-colors ${
-              isHomePage && !scrolled
-                ? "text-white/80 hover:text-white hover:bg-white/10"
-                : "hover:bg-card-hover"
-            }`}
+            className="p-2 rounded-full transition-colors text-white/80 hover:text-white hover:bg-white/10"
             aria-label="搜索"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -188,11 +168,7 @@ export function Navbar() {
 
           {/* BGM placeholder */}
           <button
-            className={`p-2 rounded-full transition-colors ${
-              isHomePage && !scrolled
-                ? "text-white/80 hover:text-white hover:bg-white/10"
-                : "hover:bg-card-hover"
-            }`}
+            className="p-2 rounded-full transition-colors text-white/80 hover:text-white hover:bg-white/10"
             aria-label="背景音乐"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -205,11 +181,7 @@ export function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className={`p-2 rounded-full transition-colors md:hidden ${
-              isHomePage && !scrolled
-                ? "text-white/80 hover:text-white hover:bg-white/10"
-                : "hover:bg-card-hover"
-            }`}
+            className="p-2 rounded-full transition-colors md:hidden text-white/80 hover:text-white hover:bg-white/10"
             aria-label="菜单"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

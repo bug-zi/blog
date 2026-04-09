@@ -18,7 +18,7 @@ export default function AboutPage() {
       </div>
 
       <div className="mx-auto max-w-3xl px-4 py-16 relative">
-      <div className="relative rounded-2xl bg-white/85 dark:bg-black/70 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10">
+      <div className="relative rounded-2xl bg-black/20 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10">
       <h1 className="text-2xl font-bold mb-2">关于</h1>
       <p className="text-sm text-muted mb-8">关于本站和站长</p>
 
