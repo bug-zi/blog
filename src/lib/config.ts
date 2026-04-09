@@ -7,7 +7,7 @@ export const siteConfig = {
   owner: {
     name: "DebugZi",
     avatar: "/images/头像2.jpg",
-    bio: "喜欢在旅行时创作的 planner",
+    bio: "喜欢在旅行时创作的 <Planner>",
     motto: "去爱，去失去，要不负相遇。",
     startDate: "2025-01-01", // 建站日期，用于计算建站天数
   },

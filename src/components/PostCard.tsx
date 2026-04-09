@@ -4,7 +4,7 @@ import type { PostMeta } from "@/lib/posts";
 export function PostCard({ post }: { post: PostMeta }) {
   return (
     <Link href={`/${post.type === "work" ? "work" : "passage"}/${post.slug}`}>
-      <article className="group rounded-xl border border-border bg-card p-5 hover:bg-card-hover hover:border-accent/30 transition-all duration-300">
+      <article className="group rounded-xl border border-white/20 dark:border-white/10 bg-white/50 dark:bg-black/60 backdrop-blur-sm p-5 hover:bg-white/70 dark:hover:bg-black/70 hover:border-accent/30 transition-all duration-300">
         {post.cover && (
           <div className="mb-3 overflow-hidden rounded-lg">
             <img

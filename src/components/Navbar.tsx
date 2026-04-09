@@ -2,18 +2,71 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { siteConfig } from "@/lib/config";
 import { ThemeToggle } from "./ThemeToggle";
 import { useTheme } from "./ThemeProvider";
+import { usePathname } from "next/navigation";
+
+// More menu items
+const moreItems = [
+  { title: "照片墙", href: "/more/photos" },
+  { title: "留言", href: "/more/message" },
+  { title: "足迹", href: "/more/footprint" },
+  { title: "友链", href: "/more/friends" },
+  { title: "自述", href: "/more/about" },
+  { title: "历史", href: "/more/history" },
+];
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { theme } = useTheme();
+  const pathname = usePathname();
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  const isHomePage = pathname === "/";
+
+  // Scroll detection for transparent navbar on home page
+  useEffect(() => {
+    if (!isHomePage) return;
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
+
+  // Close more menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+
+    if (moreOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [moreOpen]);
+
+  // Dynamic navbar styles based on page and scroll state
+  const navbarClasses = isHomePage
+    ? `sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-white/10 bg-black/20 backdrop-blur-md"
+          : "border-b-0 bg-transparent"
+      }`
+    : "sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <header className={navbarClasses}>
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         {/* Logo / Avatar */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -22,28 +75,94 @@ export function Navbar() {
             alt={siteConfig.owner.name}
             width={32}
             height={32}
-            className="rounded-full"
+            className="rounded-full ring-2 ring-white/20"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
             }}
           />
-          <span className="font-bold text-sm hidden sm:inline">
+          <span className={`font-bold text-sm hidden sm:inline ${isHomePage && !scrolled ? "text-white" : ""}`}>
             {siteConfig.name}
           </span>
         </Link>
 
         {/* Desktop nav links */}
         <ul className="hidden md:flex items-center gap-1">
-          {siteConfig.nav.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="px-3 py-1.5 rounded-lg text-sm text-muted hover:text-foreground hover:bg-card-hover transition-colors"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
+          {siteConfig.nav.map((item) => {
+            // Check if this is the "More" item
+            const isMore = item.href === "/more";
+
+            if (isMore) {
+              return (
+                <li key={item.href} className="relative">
+                  <div ref={moreRef}>
+                    <button
+                      onClick={() => setMoreOpen(!moreOpen)}
+                      className={`px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1 ${
+                        isHomePage && !scrolled
+                          ? "text-white/80 hover:text-white hover:bg-white/10"
+                          : "text-muted hover:text-foreground hover:bg-card-hover"
+                      }`}
+                    >
+                      {item.label}
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-transform ${moreOpen ? "rotate-180" : ""}`}
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+
+                    {/* Dropdown menu */}
+                    {moreOpen && (
+                      <div
+                        className="absolute top-full left-0 mt-1 min-w-[200px] rounded-xl border border-neutral-700/30 bg-neutral-900/20 backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-200"
+                      >
+                        <ul className="py-1">
+                          {moreItems.map((moreItem) => (
+                            <li key={moreItem.href}>
+                              <Link
+                                href={moreItem.href}
+                                onClick={() => setMoreOpen(false)}
+                                className={`block px-4 py-2.5 text-sm transition-colors ${
+                                  isHomePage && !scrolled
+                                    ? "text-white/80 hover:text-white hover:bg-white/10"
+                                    : "text-muted hover:text-foreground hover:bg-card-hover"
+                                }`}
+                              >
+                                {moreItem.title}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              );
+            }
+
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                    isHomePage && !scrolled
+                      ? "text-white/80 hover:text-white hover:bg-white/10"
+                      : "text-muted hover:text-foreground hover:bg-card-hover"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         {/* Right actions */}
@@ -51,7 +170,11 @@ export function Navbar() {
           {/* Search */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className="p-2 rounded-full hover:bg-card-hover transition-colors"
+            className={`p-2 rounded-full transition-colors ${
+              isHomePage && !scrolled
+                ? "text-white/80 hover:text-white hover:bg-white/10"
+                : "hover:bg-card-hover"
+            }`}
             aria-label="搜索"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -61,11 +184,15 @@ export function Navbar() {
           </button>
 
           {/* Theme toggle */}
-          <ThemeToggle />
+          <ThemeToggle isHomePage={isHomePage} scrolled={scrolled} />
 
           {/* BGM placeholder */}
           <button
-            className="p-2 rounded-full hover:bg-card-hover transition-colors"
+            className={`p-2 rounded-full transition-colors ${
+              isHomePage && !scrolled
+                ? "text-white/80 hover:text-white hover:bg-white/10"
+                : "hover:bg-card-hover"
+            }`}
             aria-label="背景音乐"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -78,7 +205,11 @@ export function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-full hover:bg-card-hover transition-colors md:hidden"
+            className={`p-2 rounded-full transition-colors md:hidden ${
+              isHomePage && !scrolled
+                ? "text-white/80 hover:text-white hover:bg-white/10"
+                : "hover:bg-card-hover"
+            }`}
             aria-label="菜单"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -101,31 +232,79 @@ export function Navbar() {
 
       {/* Mobile nav menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background">
+        <div className="md:hidden border-t border-neutral-700/50 bg-neutral-900/90 backdrop-blur-md">
           <ul className="flex flex-col py-2 px-4">
-            {siteConfig.nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block py-2 text-sm text-muted hover:text-foreground transition-colors"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {siteConfig.nav.map((item) => {
+              const isMore = item.href === "/more";
+
+              if (isMore) {
+                return (
+                  <li key={item.href}>
+                    <button
+                      onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
+                      className="flex w-full items-center justify-between py-2 text-sm text-white/80 hover:text-white transition-colors"
+                    >
+                      <span>{item.label}</span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-transform ${mobileMoreOpen ? "rotate-180" : ""}`}
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                    {mobileMoreOpen && (
+                      <ul className="mt-1 ml-4 space-y-1 border-l-2 border-white/10 pl-3">
+                        {moreItems.map((moreItem) => (
+                          <li key={moreItem.href}>
+                            <Link
+                              href={moreItem.href}
+                              onClick={() => {
+                                setMobileOpen(false);
+                                setMobileMoreOpen(false);
+                              }}
+                              className="block py-1.5 text-sm text-white/60 hover:text-white transition-colors"
+                            >
+                              {moreItem.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block py-2 text-sm text-white/80 hover:text-white transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
 
       {/* Search overlay */}
       {searchOpen && (
-        <div className="absolute top-14 left-0 right-0 border-b border-border bg-background/95 backdrop-blur-md p-4">
+        <div className="absolute top-14 left-0 right-0 border-b border-neutral-700/50 bg-neutral-900/90 backdrop-blur-md p-4">
           <div className="mx-auto max-w-2xl">
             <input
               type="text"
               placeholder="搜索文章、作品..."
-              className="w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none focus:border-accent transition-colors"
+              className="w-full rounded-xl border border-neutral-600 bg-neutral-800/50 px-4 py-2.5 text-sm text-white outline-none placeholder:text-white/50 transition-colors focus:border-accent"
               autoFocus
             />
           </div>

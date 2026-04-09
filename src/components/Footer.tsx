@@ -9,7 +9,7 @@ export function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <h3 className="font-bold text-lg mb-2">{siteConfig.name}</h3>
-            <p className="text-sm text-muted leading-relaxed">
+            <p className="text-sm text-white leading-relaxed">
               {siteConfig.description}
             </p>
           </div>
@@ -17,7 +17,7 @@ export function Footer() {
           {/* About */}
           <div>
             <h4 className="font-semibold text-sm mb-3">关于</h4>
-            <ul className="space-y-2 text-sm text-muted">
+            <ul className="space-y-2 text-sm text-white">
               <li>
                 <Link href="/about" className="hover:text-foreground transition-colors">
                   关于本站
@@ -34,7 +34,7 @@ export function Footer() {
           {/* Contact */}
           <div>
             <h4 className="font-semibold text-sm mb-3">联系</h4>
-            <ul className="space-y-2 text-sm text-muted">
+            <ul className="space-y-2 text-sm text-white">
               <li>
                 <Link href="/more/message" className="hover:text-foreground transition-colors">
                   写留言
@@ -54,7 +54,7 @@ export function Footer() {
           {/* Support */}
           <div>
             <h4 className="font-semibold text-sm mb-3">支持</h4>
-            <ul className="space-y-2 text-sm text-muted">
+            <ul className="space-y-2 text-sm text-white">
               <li>
                 <Link href="/more/coffee" className="hover:text-foreground transition-colors">
                   请喝咖啡 ☕
@@ -70,21 +70,13 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+        <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white">
           <p>
             &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
             reserved.
           </p>
           <p>
-            Built with Next.js &amp; TailwindCSS. Inspired by{" "}
-            <a
-              href="https://innei.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent hover:underline"
-            >
-              静かな森
-            </a>
+            Love is warmth, while being loved is light.
           </p>
         </div>
       </div>

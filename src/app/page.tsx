@@ -2,6 +2,8 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/config";
 import { getPosts, getWorks, getFeaturedPosts, getFeaturedWorks, getDaysSinceStart } from "@/lib/posts";
 import { PostCard } from "@/components/PostCard";
+import { HeroFade } from "@/components/HeroFade";
+import { ContentFadeIn } from "@/components/ContentFadeIn";
 
 export default function HomePage() {
   const posts = getPosts();
@@ -18,132 +20,181 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-16">
+    <div className="relative min-h-screen">
+      {/* ===== Global Background ===== */}
+      <img
+        src="/images/blog-index.png"
+        alt=""
+        aria-hidden="true"
+        className="fixed inset-0 w-full h-full object-cover -z-10"
+      />
+      {/* Multi-layer overlay for depth */}
+      <div className="fixed inset-0 -z-10">
+        {/* Base dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
+        {/* Color tint for warmth */}
+        <div className="absolute inset-0 bg-orange-900/10 dark:bg-blue-900/10 mix-blend-overlay" />
+        {/* Vignette effect */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.3)_100%)]" />
+      </div>
+
       {/* ===== Hero Section ===== */}
-      <section className="flex flex-col md:flex-row items-center gap-10 md:gap-16 mb-20 pt-8">
-        {/* Left: text info */}
-        <div className="flex-1 text-center md:text-left">
-          <h1 className="text-4xl font-bold mb-2">{siteConfig.owner.name}</h1>
-          <p className="text-lg text-muted mb-1">{siteConfig.owner.bio}</p>
-          <p className="text-sm text-muted/70 italic mb-6">
-            &ldquo;{siteConfig.owner.motto}&rdquo;
-          </p>
+      <HeroFade>
+        <section className="flex flex-col items-center justify-center text-center min-h-screen py-16 relative">
+        {/* Animated glow behind avatar */}
+        <div className="absolute top-[20vh] w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" />
 
-          {/* Social links */}
-          <div className="flex gap-3 justify-center md:justify-start mb-8">
-            {siteConfig.social.map((s) => (
-              <a
-                key={s.name}
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2.5 rounded-full border border-border hover:border-accent hover:text-accent transition-colors"
-                title={s.name}
-              >
-                <SocialIcon name={s.icon} />
-              </a>
-            ))}
-          </div>
+        {/* Avatar */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={siteConfig.owner.avatar}
+          alt={siteConfig.owner.name}
+          width={120}
+          height={120}
+          className="relative w-28 h-28 rounded-full object-cover ring-4 ring-white/30 shadow-2xl mb-10 hover:scale-105 transition-transform duration-300"
+        />
 
-          {/* Stats */}
-          <div className="flex gap-8 justify-center md:justify-start">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-lg font-semibold">{stat.value}</div>
-                <div className="text-xs text-muted">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+        {/* Name with text glow */}
+        <h1 className="relative text-4xl font-bold mb-6 text-white drop-shadow-lg">
+          <span className="font-normal text-3xl">Hi, I&apos;m </span>{siteConfig.owner.name}
+        </h1>
+
+        {/* Bio */}
+        <p className="text-4xl mb-8 text-white/90 drop-shadow-md leading-relaxed">
+          喜欢在旅行时创作的 <span className="font-semibold text-white/95">{'<Planner>'}</span>
+        </p>
+
+        {/* Motto */}
+        <p className="text-base text-white/70 italic mb-12 max-w-lg drop-shadow-md leading-relaxed">
+          &ldquo;{siteConfig.owner.motto}&rdquo;
+        </p>
+
+        {/* Stats with glass effect - reduced spacing */}
+        <div className="flex gap-10 mb-10">
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center px-6 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+              <div className="text-xl font-semibold text-white">{stat.value}</div>
+              <div className="text-xs text-white/60 mt-1">{stat.label}</div>
+            </div>
+          ))}
         </div>
 
-        {/* Right: large avatar */}
-        <div className="shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={siteConfig.owner.avatar}
-            alt={siteConfig.owner.name}
-            width={160}
-            height={160}
-            className="w-40 h-40 rounded-full object-cover ring-4 ring-border shadow-lg"
-          />
-        </div>
-      </section>
-
-      {/* ===== Featured Work ===== */}
-      {featuredWorks.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">精选作品</h2>
-            <Link
-              href="/work"
-              className="text-sm text-muted hover:text-accent transition-colors"
+        {/* Social links with enhanced hover */}
+        <div className="flex gap-4" style={{ marginBottom: '103px' }}>
+          {siteConfig.social.map((s) => (
+            <a
+              key={s.name}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full border border-white/30 text-white hover:border-white hover:bg-white/20 hover:scale-110 hover:shadow-lg hover:shadow-white/20 transition-all duration-300"
+              title={s.name}
             >
-              查看全部 →
-            </Link>
-          </div>
-          <div className="grid gap-4">
-            {featuredWorks.map((work) => (
-              <PostCard key={work.slug} post={work} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ===== Featured Posts ===== */}
-      <section className="mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">精选文章</h2>
-          <Link
-            href="/passage"
-            className="text-sm text-muted hover:text-accent transition-colors"
-          >
-            查看全部 →
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredPosts.length > 0 ? (
-            featuredPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
-            ))
-          ) : (
-            <p className="text-sm text-muted col-span-full">
-              还没有精选文章，去{" "}
-              <Link href="/passage" className="text-accent hover:underline">
-                文章页
-              </Link>{" "}
-              看看。
-            </p>
-          )}
+              <SocialIcon name={s.icon} />
+            </a>
+          ))}
         </div>
       </section>
+      </HeroFade>
 
-      {/* ===== Recent Posts ===== */}
-      {posts.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">最近更新</h2>
-          </div>
-          <div className="space-y-3">
-            {posts.slice(0, 5).map((post) => (
-              <Link
-                key={post.slug}
-                href={`/passage/${post.slug}`}
-                className="flex items-center justify-between py-3 border-b border-border/50 hover:text-accent transition-colors group"
-              >
-                <span className="text-sm font-medium group-hover:text-accent transition-colors">
-                  {post.title}
-                </span>
-                <span className="text-xs text-muted shrink-0 ml-4">
-                  {new Date(post.date).toLocaleDateString("zh-CN", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </span>
-              </Link>
-            ))}
+      {/* ===== Content Section - pulled up to overlap hero ===== */}
+      <ContentFadeIn>
+        <div className="mx-auto max-w-4xl px-4 pb-16 relative -mt-16">
+        {/* ===== Featured Work ===== */}
+        {featuredWorks.length > 0 && (
+          <section className="mb-8 group">
+            <div className="relative rounded-2xl bg-white/85 dark:bg-black/70 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10 overflow-hidden">
+              {/* Gradient overlay on card */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold">精选作品</h2>
+                  <Link
+                    href="/work"
+                    className="text-sm text-muted hover:text-accent transition-colors"
+                  >
+                    查看全部 →
+                  </Link>
+                </div>
+                <div className="grid gap-4">
+                  {featuredWorks.map((work) => (
+                    <PostCard key={work.slug} post={work} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ===== Featured Posts ===== */}
+        <section className="mb-8 group">
+          <div className="relative rounded-2xl bg-white/85 dark:bg-black/70 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10 overflow-hidden hover:shadow-2xl hover:shadow-black/20 transition-all duration-300">
+            {/* Subtle inner glow */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold">精选文章</h2>
+                <Link
+                  href="/passage"
+                  className="text-sm text-muted hover:text-accent transition-colors"
+                >
+                  查看全部 →
+                </Link>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {featuredPosts.length > 0 ? (
+                  featuredPosts.map((post) => (
+                    <PostCard key={post.slug} post={post} />
+                  ))
+                ) : (
+                  <p className="text-sm text-muted col-span-full">
+                    还没有精选文章，去{" "}
+                    <Link href="/passage" className="text-accent hover:underline">
+                      文章页
+                    </Link>{" "}
+                    看看。
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </section>
-      )}
+
+        {/* ===== Recent Posts ===== */}
+        {posts.length > 0 && (
+          <section className="group">
+            <div className="relative rounded-2xl bg-white/85 dark:bg-black/70 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10 overflow-hidden hover:shadow-2xl hover:shadow-black/20 transition-all duration-300">
+              {/* Subtle inner glow */}
+              <div className="absolute inset-0 bg-gradient-to-bl from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold">最近更新</h2>
+                </div>
+                <div className="space-y-3">
+                  {posts.slice(0, 5).map((post) => (
+                    <Link
+                      key={post.slug}
+                      href={`/passage/${post.slug}`}
+                      className="flex items-center justify-between py-3 border-b border-border/50 hover:text-accent hover:bg-accent/5 rounded-lg px-3 -mx-3 transition-all duration-200 group/link"
+                    >
+                      <span className="text-sm font-medium group-hover/link:text-accent transition-colors">
+                        {post.title}
+                      </span>
+                      <span className="text-xs text-muted shrink-0 ml-4 group-hover/link:text-accent/80 transition-colors">
+                        {new Date(post.date).toLocaleDateString("zh-CN", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
+      </ContentFadeIn>
     </div>
   );
 }
@@ -168,6 +219,16 @@ function SocialIcon({ name }: { name: string }) {
     netease: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.744 14.27c-.097.463-.316.916-.613 1.28-.342.42-.795.748-1.29.96-.562.238-1.19.352-1.803.352-.545 0-1.076-.088-1.552-.275a3.785 3.785 0 0 1-1.236-.782 3.63 3.63 0 0 1-.831-1.238 4.164 4.164 0 0 1-.3-1.588c0-.562.108-1.095.313-1.567.2-.464.488-.873.846-1.208a3.942 3.942 0 0 1 1.282-.803c.49-.19 1.022-.29 1.578-.29.508 0 .994.08 1.44.238.42.148.795.363 1.107.637.283.249.506.554.658.9.139.314.213.658.213 1.017 0 .37-.09.712-.259 1.007a2.445 2.445 0 0 1-.678.773 3.276 3.276 0 0 1-.962.504 3.736 3.736 0 0 1-1.122.173c-.327 0-.622-.048-.876-.142a1.89 1.89 0 0 1-.632-.377 1.58 1.58 0 0 1-.388-.544 1.588 1.588 0 0 1-.13-.635c0-.337.092-.638.267-.886.166-.236.402-.418.688-.53.266-.104.568-.16.89-.16.292 0 .56.045.79.13.21.078.383.19.51.328a.924.924 0 0 1 .244.63.62.62 0 0 1-.098.348.495.495 0 0 1-.253.193.375.375 0 0 1-.28-.013.32.32 0 0 1-.155-.182l-.002-.005a.64.64 0 0 0-.187-.258.793.793 0 0 0-.296-.158 1.212 1.212 0 0 0-.363-.05c-.19 0-.365.032-.512.09a.84.84 0 0 0-.35.236.587.587 0 0 0-.13.387c0 .15.048.283.14.39a.953.953 0 0 0 .39.263c.167.066.368.1.594.1.328 0 .626-.058.88-.17.238-.105.438-.25.587-.424a.982.982 0 0 0 .205-.602c0-.204-.05-.396-.148-.57a1.472 1.472 0 0 0-.422-.465 2.082 2.082 0 0 0-.667-.332 2.636 2.636 0 0 0-.855-.127c-.395 0-.77.068-1.11.2-.33.13-.622.317-.863.554a2.493 2.493 0 0 0-.569.847 2.818 2.818 0 0 0-.2 1.064c0 .4.072.775.21 1.11.14.34.35.647.62.903.274.26.607.469.99.613.39.148.828.222 1.303.222.436 0 .856-.07 1.244-.205a2.94 2.94 0 0 0 .98-.567c.272-.24.485-.53.63-.86.14-.316.214-.664.214-1.03 0-.128-.01-.26-.032-.394l.002.001z" />
+      </svg>
+    ),
+    dingtalk: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2H8v-2H7v-2H6V9h10v1h-1v2h-1v2h-1v2h-2z" />
+      </svg>
+    ),
+    xiaohongshu: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-3 5-3v6zm2 0V9l5 3-5 3z" />
       </svg>
     ),
   };

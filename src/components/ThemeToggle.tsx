@@ -2,13 +2,24 @@
 
 import { useTheme } from "./ThemeProvider";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  isHomePage?: boolean;
+  scrolled?: boolean;
+}
+
+export function ThemeToggle({ isHomePage = false, scrolled = false }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
+
+  const buttonClass = `p-2 rounded-full transition-colors ${
+    isHomePage && !scrolled
+      ? "text-white/80 hover:text-white hover:bg-white/10"
+      : "hover:bg-card-hover"
+  }`;
 
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full hover:bg-card-hover transition-colors"
+      className={buttonClass}
       aria-label="切换主题"
     >
       {theme === "dark" ? (
