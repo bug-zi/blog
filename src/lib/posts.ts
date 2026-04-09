@@ -19,6 +19,7 @@ export interface SentenceMeta {
   title: string;
   date: string;
   author?: string;
+  tags?: string[];
 }
 
 export interface PhotoMeta {
@@ -132,6 +133,7 @@ export function getSentences(): SentenceMeta[] {
         title: data.title ?? filename,
         date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
         author: data.author,
+        tags: data.tags ?? [],
       };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

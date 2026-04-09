@@ -1,4 +1,5 @@
 import { getSentences } from "@/lib/posts";
+import { SentenceTags } from "@/components/SentenceTags";
 
 export default function SentencePage() {
   const sentences = getSentences();
@@ -20,33 +21,38 @@ export default function SentencePage() {
       </div>
 
       <div className="mx-auto max-w-3xl px-4 py-16 text-center relative">
-      <h1 className="text-2xl font-bold mb-2">一言</h1>
-      <p className="text-sm text-muted mb-16">记录触动心灵的句子</p>
+      <h1 className="text-2xl font-bold mb-2 text-white">一言</h1>
+      <p className="text-sm text-white/70 mb-8">记录触动心灵的句子</p>
 
-      {sentences.length === 0 ? (
-        <div className="py-20">
-          <blockquote className="text-xl italic text-muted">
-            &ldquo;去爱，去失去，要不负相遇。&rdquo;
-          </blockquote>
-          <p className="mt-4 text-sm text-muted/60">— 即将上线</p>
-        </div>
-      ) : (
-        <div className="space-y-12">
-          {sentences.map((s) => (
-            <div key={s.slug} className="py-8">
-              <blockquote className="text-xl italic">
-                &ldquo;{s.title}&rdquo;
-              </blockquote>
-              {s.author && (
-                <p className="mt-3 text-sm text-muted">— {s.author}</p>
-              )}
-              <p className="mt-1 text-xs text-muted/50">
-                {new Date(s.date).toLocaleDateString("zh-CN")}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="relative rounded-2xl bg-black/20 backdrop-blur-md p-4 shadow-lg border border-white/10">
+        {sentences.length === 0 ? (
+          <div className="py-20">
+            <blockquote className="text-xl italic text-white/90">
+              &ldquo;去爱，去失去，要不负相遇。&rdquo;
+            </blockquote>
+            <p className="mt-4 text-sm text-white/60">— 即将上线</p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {sentences.map((s) => (
+              <div key={s.slug} className="py-6 border-b border-white/10 last:border-0">
+                <blockquote className="text-xl italic text-white/90">
+                  &ldquo;{s.title}&rdquo;
+                </blockquote>
+                {s.author && (
+                  <p className="mt-3 text-sm text-white/70">— {s.author}</p>
+                )}
+                <div className="mt-2 flex items-center justify-between gap-4">
+                  <SentenceTags tags={s.tags} />
+                  <p className="text-xs text-white/50 shrink-0">
+                    {new Date(s.date).toLocaleDateString("zh-CN")}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );
