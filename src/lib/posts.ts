@@ -14,6 +14,7 @@ export interface PostMeta {
   type: "post" | "work" | "star";
   status?: string;
   url?: string;
+  link?: string;
 }
 
 export interface SentenceMeta {
@@ -55,6 +56,7 @@ function readMdxFiles(subDir: string, type: PostMeta["type"]): PostMeta[] {
         cover: data.cover,
         status: data.status,
         url: data.url,
+        link: data.link,
         type,
       };
     })
@@ -107,6 +109,7 @@ export function getPostBySlug(
       cover: data.cover,
       status: data.status,
       url: data.url,
+      link: data.link,
       type: SUBDIR_TO_TYPE[subDir] ?? "post",
     },
     content,

@@ -5,7 +5,7 @@ import { PostCard } from "@/components/PostCard";
 import { WorkCard } from "@/components/WorkCard";
 import { HeroFade } from "@/components/HeroFade";
 import { ContentFadeIn } from "@/components/ContentFadeIn";
-import { SocialLinks } from "@/components/SocialLinks";
+import { HeroSection } from "@/components/HeroSection";
 
 export default function HomePage() {
   const posts = getPosts();
@@ -42,48 +42,7 @@ export default function HomePage() {
 
       {/* ===== Hero Section ===== */}
       <HeroFade>
-        <section className="flex flex-col items-center justify-center text-center min-h-screen py-16 relative">
-        {/* Animated glow behind avatar */}
-        <div className="absolute top-[20vh] w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" />
-
-        {/* Avatar */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={siteConfig.owner.avatar}
-          alt={siteConfig.owner.name}
-          width={120}
-          height={120}
-          className="relative w-28 h-28 rounded-full object-cover ring-4 ring-white/30 shadow-2xl mb-10 hover:scale-105 transition-transform duration-300"
-        />
-
-        {/* Name with text glow */}
-        <h1 className="relative text-4xl font-bold mb-6 text-white drop-shadow-lg">
-          <span className="font-normal text-3xl">Hi, I&apos;m </span>{siteConfig.owner.name}
-        </h1>
-
-        {/* Bio */}
-        <p className="text-4xl mb-8 text-white/90 drop-shadow-md leading-relaxed">
-          喜欢在旅行时创作的 <span className="font-semibold text-white/95">{'<Planner>'}</span>
-        </p>
-
-        {/* Motto */}
-        <p className="text-base text-white/70 italic mb-12 max-w-lg drop-shadow-md leading-relaxed">
-          &ldquo;{siteConfig.owner.motto}&rdquo;
-        </p>
-
-        {/* Stats with glass effect - reduced spacing */}
-        <div className="flex gap-10 mb-10">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center px-6 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <div className="text-xl font-semibold text-white">{stat.value}</div>
-              <div className="text-xs text-white/60 mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Social links with enhanced hover */}
-        <SocialLinks />
-      </section>
+        <HeroSection stats={stats} />
       </HeroFade>
 
       {/* ===== Content Section - pulled up to overlap hero ===== */}
