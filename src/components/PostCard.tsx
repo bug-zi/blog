@@ -17,7 +17,7 @@ export function PostCard({ post }: { post: PostMeta }) {
 
   return (
     <Link href={getRoutePath()}>
-      <article className="group rounded-xl bg-white/5 backdrop-blur-sm p-5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-left">
+      <article className="group rounded-lg border-b border-white/10 hover:bg-white/10 px-3 -mx-3 transition-all duration-200 p-4 text-left">
         {post.cover && (
           <div className="mb-3 overflow-hidden rounded-lg">
             <img

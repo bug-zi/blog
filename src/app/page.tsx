@@ -91,60 +91,52 @@ export default function HomePage() {
         <div className="mx-auto max-w-4xl px-4 pb-16 relative -mt-16">
         {/* ===== Featured Work ===== */}
         {featuredWorks.length > 0 && (
-          <section className="mb-8 group">
-            <div className="relative rounded-2xl bg-black/20 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10 overflow-hidden">
-              {/* Gradient overlay on card */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-white">精选作品</h2>
-                  <Link
-                    href="/work"
-                    className="text-sm text-muted hover:text-accent transition-colors"
-                  >
-                    查看全部 →
-                  </Link>
-                </div>
-                <div className="grid gap-4">
-                  {featuredWorks.map((work) => (
-                    <WorkCard key={work.slug} work={work} />
-                  ))}
-                </div>
+          <section className="mb-8">
+            <div className="rounded-2xl bg-black/20 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-white">精选作品</h2>
+                <Link
+                  href="/work"
+                  className="text-sm text-muted hover:text-accent transition-colors"
+                >
+                  查看全部 →
+                </Link>
+              </div>
+              <div className="grid gap-4">
+                {featuredWorks.map((work) => (
+                  <WorkCard key={work.slug} work={work} />
+                ))}
               </div>
             </div>
           </section>
         )}
 
         {/* ===== Featured Posts ===== */}
-        <section className="mb-8 group">
-          <div className="relative rounded-2xl bg-black/20 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10 overflow-hidden hover:shadow-2xl hover:shadow-black/20 transition-all duration-300">
-            {/* Subtle inner glow */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">精选文章</h2>
-                <Link
-                  href="/passage"
-                  className="text-sm text-muted hover:text-accent transition-colors"
-                >
-                  查看全部 →
-                </Link>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {featuredPosts.length > 0 ? (
-                  featuredPosts.map((post) => (
-                    <PostCard key={post.slug} post={post} />
-                  ))
-                ) : (
-                  <p className="text-sm text-muted col-span-full">
-                    还没有精选文章，去{" "}
-                    <Link href="/passage" className="text-accent hover:underline">
-                      文章页
-                    </Link>{" "}
-                    看看。
-                  </p>
-                )}
-              </div>
+        <section className="mb-8">
+          <div className="rounded-2xl bg-black/20 backdrop-blur-md p-6 shadow-xl border border-white/20 dark:border-white/10">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white">精选文章</h2>
+              <Link
+                href="/passage"
+                className="text-sm text-muted hover:text-accent transition-colors"
+              >
+                查看全部 →
+              </Link>
+            </div>
+            <div className="grid gap-3">
+              {featuredPosts.length > 0 ? (
+                featuredPosts.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))
+              ) : (
+                <p className="text-sm text-muted col-span-full">
+                  还没有精选文章，去{" "}
+                  <Link href="/passage" className="text-accent hover:underline">
+                    文章页
+                  </Link>{" "}
+                  看看。
+                </p>
+              )}
             </div>
           </div>
         </section>

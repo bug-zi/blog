@@ -31,6 +31,10 @@ No test framework is configured.
 
 **GitHub OAuth**: `src/app/api/auth/route.ts` handles the OAuth flow. It exchanges GitHub code for access token, then sends it back to the CMS popup via `window.opener.postMessage` using the string format: `'authorization:github:success:' + JSON.stringify({token, provider})`. Requires `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` environment variables.
 
+## Behavioral Rules
+
+- **Non-breaking changes**: When modifying code based on a specific instruction, only change what is explicitly requested. Do not alter or remove any unrelated existing functionality, styling, or structure. If in doubt, read the full file before editing to understand context.
+
 ## Key Patterns
 
 - Pages under `src/app/` are Server Components by default. Only components needing interactivity (Navbar, ThemeToggle, ThemeProvider) are marked `"use client"`.

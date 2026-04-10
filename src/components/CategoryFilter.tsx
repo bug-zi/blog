@@ -65,7 +65,7 @@ export function CategoryFilter({ posts, featuredPosts }: CategoryFilterProps) {
         <div className="absolute -right-40 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-sm text-white/80"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-black/30 border border-white/10 hover:bg-black/40 hover:border-white/20 transition-all duration-200 text-sm text-white/80 backdrop-blur-md"
           >
             <span>{currentLabel}</span>
             <svg
@@ -81,7 +81,7 @@ export function CategoryFilter({ posts, featuredPosts }: CategoryFilterProps) {
           {open && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-              <ul className="absolute right-0 z-20 mt-1.5 w-32 rounded-lg bg-white/10 backdrop-blur-2xl border border-white/15 py-1 shadow-xl shadow-black/20">
+              <ul className="absolute right-0 z-20 mt-1.5 w-32 rounded-lg bg-black/50 backdrop-blur-2xl border border-white/10 py-1 shadow-xl shadow-black/30">
                 {DROPDOWN_CATEGORIES.map((cat) => (
                   <li key={cat.slug}>
                     <button
