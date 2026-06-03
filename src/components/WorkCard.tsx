@@ -29,7 +29,7 @@ export function WorkCard({ work }: { work: PostMeta }) {
         {work.category === "software" && (
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/40">
             <span className="inline-flex items-center gap-1">
-              <span className={`inline-block w-1.5 h-1.5 rounded-full ${work.status === "已上线" ? "bg-green-400" : work.status === "开发中" ? "bg-yellow-400" : "bg-white/30"}`} />
+              <span className={`inline-block w-1.5 h-1.5 rounded-full ${work.status === "已上线" ? "bg-green-400" : work.status === "开发中" ? "bg-yellow-400" : work.status === "维护中" ? "bg-red-400" : "bg-white/30"}`} />
               {work.status ?? "未知"}
             </span>
             <time>
