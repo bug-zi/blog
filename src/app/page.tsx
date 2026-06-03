@@ -11,7 +11,7 @@ export default function HomePage() {
   const posts = getPosts();
   const works = getWorks();
   const featuredPosts = getFeaturedPosts(3);
-  const featuredWorks = getFeaturedWorks(1);
+  const featuredWorks = getFeaturedWorks(2);
   const daysSinceStart = getDaysSinceStart(siteConfig.owner.startDate);
 
   const stats = [
