@@ -72,7 +72,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "标题", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "简介", name: "description", widget: "text", required: false },
             { label: "分类", name: "category", widget: "select", required: true, options: [
               { label: "技术", value: "tech" },
@@ -99,7 +99,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "标题", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "简介", name: "description", widget: "text", required: false },
             { label: "分类", name: "category", widget: "select", required: false, options: [
               { label: "软件项目", value: "software" },
@@ -127,7 +127,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "网站名称", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "一句话介绍", name: "description", widget: "text", required: false },
             { label: "网址", name: "link", widget: "string", required: true }
           ]
@@ -144,7 +144,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "工具名称", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "一句话介绍", name: "description", widget: "text", required: false },
             { label: "网址", name: "link", widget: "string", required: true }
           ]
@@ -161,7 +161,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "文章标题", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "一句话介绍", name: "description", widget: "text", required: false },
             { label: "文章链接", name: "link", widget: "string", required: true }
           ]
@@ -178,7 +178,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "歌名", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "歌手名", name: "artist", widget: "string", required: true },
             { label: "发布年份", name: "year", widget: "string", required: true }
           ]
@@ -195,7 +195,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "书籍名", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "作者", name: "author", widget: "string", required: true },
             { label: "发布年份", name: "year", widget: "string", required: true },
             { label: "豆瓣链接", name: "douban_link", widget: "string", required: false }
@@ -213,7 +213,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "影视作品名", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "发布年份", name: "year", widget: "string", required: true },
             { label: "豆瓣链接", name: "douban_link", widget: "string", required: false }
           ]
@@ -230,7 +230,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "句子内容", name: "title", widget: "string" },
-            { label: "添加日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "添加日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "作者/出处", name: "author", widget: "string", required: false },
             { label: "标签", name: "tags", widget: "list", required: false },
             { label: "备注", name: "body", widget: "markdown", required: false }
@@ -248,7 +248,7 @@
           slug: "{{slug}}",
           fields: [
             { label: "标题", name: "title", widget: "string" },
-            { label: "拍摄日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" },
+            { label: "拍摄日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "图片", name: "image", widget: "image" },
             { label: "描述", name: "description", widget: "text", required: false },
             { label: "备注", name: "body", widget: "markdown", required: false }
