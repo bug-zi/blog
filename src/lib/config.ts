@@ -80,3 +80,29 @@ export const siteConfig = {
     ],
   },
 };
+
+type CategorySection = keyof typeof siteConfig.categories;
+type CategoryItem = {
+  name: string;
+  slug: string;
+  children?: CategoryItem[];
+};
+
+function findCategoryName(categories: CategoryItem[], slug: string): string | null {
+  for (const category of categories) {
+    if (category.slug === slug) return category.name;
+
+    if (category.children) {
+      const childName = findCategoryName(category.children, slug);
+      if (childName) return childName;
+    }
+  }
+
+  return null;
+}
+
+export function getCategoryName(section: CategorySection, slug?: string): string {
+  if (!slug) return "";
+
+  return findCategoryName(siteConfig.categories[section], slug) ?? slug;
+}

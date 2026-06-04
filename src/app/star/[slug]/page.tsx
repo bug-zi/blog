@@ -2,6 +2,7 @@ import { getPostBySlug, getStars } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { getCategoryName } from "@/lib/config";
 
 // Enable dynamic params for all slugs in dev mode
 export const dynamicParams = true;
@@ -61,7 +62,9 @@ export default async function StarDetailPage({
           {meta.category && (
             <>
               <span>·</span>
-              <span className="text-accent">{meta.category}</span>
+              <span className="text-accent">
+                {getCategoryName("star", meta.category)}
+              </span>
             </>
           )}
           {meta.tags && meta.tags.length > 0 && (

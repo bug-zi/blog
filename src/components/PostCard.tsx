@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
+import { getCategoryName } from "@/lib/config";
 
 export function PostCard({
   post,
@@ -19,6 +20,11 @@ export function PostCard({
       default:
         return `/passage/${post.slug}`;
     }
+  };
+
+  const getCategorySection = () => {
+    if (post.type === "post") return "passage";
+    return post.type;
   };
 
   return (
@@ -44,7 +50,9 @@ export function PostCard({
           {post.category && (
             <>
               <span>·</span>
-              <span className="text-white/50">{post.category}</span>
+              <span className="text-white/50">
+                {getCategoryName(getCategorySection(), post.category)}
+              </span>
             </>
           )}
           {post.tags && post.tags.length > 0 && (

@@ -2,6 +2,7 @@ import { getPostBySlug, getWorks } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { BackLink } from "@/components/BackLink";
+import { getCategoryName } from "@/lib/config";
 
 // Enable dynamic params for all slugs in dev mode
 export const dynamicParams = true;
@@ -61,7 +62,9 @@ export default async function WorkDetailPage({
           {meta.category && (
             <>
               <span>·</span>
-              <span className="text-accent">{meta.category}</span>
+              <span className="text-accent">
+                {getCategoryName("work", meta.category)}
+              </span>
             </>
           )}
           {meta.tags && meta.tags.length > 0 && (

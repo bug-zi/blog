@@ -2,6 +2,7 @@ import { getPostBySlug, getPosts } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { BackLink } from "@/components/BackLink";
+import { getCategoryName } from "@/lib/config";
 
 // Force rebuild - 2026-04-09 20:30
 
@@ -71,7 +72,9 @@ export default async function PassageDetailPage({
           {meta.category && (
             <>
               <span>·</span>
-              <span className="text-accent">{meta.category}</span>
+              <span className="text-accent">
+                {getCategoryName("passage", meta.category)}
+              </span>
             </>
           )}
           {meta.tags && meta.tags.length > 0 && (
