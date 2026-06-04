@@ -5,6 +5,77 @@ interface StarCardProps {
   star: PostMeta;
 }
 
+function StarTypeIcon({ type }: { type: string }) {
+  const baseProps = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  switch (type) {
+    case "website":
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18" />
+          <path d="M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21" />
+          <path d="M12 3c-2.3 2.5-3.5 5.5-3.5 9s1.2 6.5 3.5 9" />
+        </svg>
+      );
+    case "tool":
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <path d="M14.7 6.3a4 4 0 0 0-5 5L4 17v3h3l5.7-5.7a4 4 0 0 0 5-5l-2.9 2.9-3-3 2.9-2.9Z" />
+        </svg>
+      );
+    case "article":
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
+          <path d="M14 3v5h5" />
+          <path d="M8 13h8" />
+          <path d="M8 17h6" />
+        </svg>
+      );
+    case "music":
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <path d="M9 18V6l10-2v12" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="16" cy="16" r="3" />
+        </svg>
+      );
+    case "movie":
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <path d="M8 4v16" />
+          <path d="M16 4v16" />
+          <path d="M4 9h4" />
+          <path d="M4 15h4" />
+          <path d="M16 9h4" />
+          <path d="M16 15h4" />
+        </svg>
+      );
+    case "book":
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5v-12Z" />
+          <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" />
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" {...baseProps}>
+          <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" />
+        </svg>
+      );
+  }
+}
+
 // 从 collection name 中提取类型（stars-website -> website）
 const getTypeFromCollection = (collection?: string) => {
   if (!collection) return "star";
@@ -24,15 +95,6 @@ const STAR_TYPE_LABELS: Record<string, string> = {
   star: "收藏",
 };
 
-const STAR_TYPE_ICONS: Record<string, string> = {
-  website: "🌐",
-  tool: "🔧",
-  article: "📄",
-  music: "🎵",
-  movie: "🎬",
-  book: "📚",
-  star: "⭐",
-};
 
 export function StarCard({ star }: StarCardProps) {
   // 尝试从多个来源确定类型
@@ -46,7 +108,6 @@ export function StarCard({ star }: StarCardProps) {
   }
 
   const typeLabel = STAR_TYPE_LABELS[type] || "收藏";
-  const typeIcon = STAR_TYPE_ICONS[type] || "⭐";
 
   // 根据类型获取显示信息
   const getSubtitle = () => {
@@ -93,7 +154,12 @@ export function StarCard({ star }: StarCardProps) {
       <article className="hover:bg-white/10 transition-colors py-3 border-b border-white/5 last:border-b-0">
         {/* Header: Type icon + Title */}
         <div className="flex items-start gap-2 mb-2">
-          <span className="text-xl">{typeIcon}</span>
+          <span
+            className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border border-white/10 bg-white/5 text-white/70 transition-colors group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white"
+            aria-label={typeLabel}
+          >
+            <StarTypeIcon type={type} />
+          </span>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-white/90 group-hover:text-white transition-colors truncate">
               {star.title}
