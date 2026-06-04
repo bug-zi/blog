@@ -119,7 +119,7 @@ export function StarCard({ star }: StarCardProps) {
       case "movie":
         return star.year || "";
       default:
-        return star.description || "";
+        return "";
     }
   };
 
