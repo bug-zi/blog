@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { getPhotos } from "@/lib/posts";
+import { PhotoWallClient } from "@/components/PhotoWallClient";
 
 export default function PhotosPage() {
   const photos = getPhotos();
@@ -42,27 +42,7 @@ export default function PhotosPage() {
           <p className="text-center text-sm text-muted mt-8">照片功能即将上线，敬请期待</p>
         </>
       ) : (
-        <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
-          {photos.map((p) => (
-            <div
-              key={p.slug}
-              className="break-inside-avoid rounded-xl overflow-hidden border border-border group"
-            >
-              <div className="relative">
-                <Image
-                  src={p.image}
-                  alt={p.title}
-                  width={400}
-                  height={400}
-                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              {p.description && (
-                <p className="px-3 py-2 text-xs text-muted">{p.description}</p>
-              )}
-            </div>
-          ))}
-        </div>
+        <PhotoWallClient photos={photos} />
       )}
       </div>
       </div>
