@@ -2,9 +2,10 @@ type SupabaseCountRow = {
   total: number;
 };
 
-type SupabaseRpcRow = {
-  increment_view_count: number;
-};
+type SupabaseRpcResponse =
+  | number
+  | { increment_view_count?: number }
+  | Array<number | { increment_view_count?: number }>;
 
 function getSupabaseConfig() {
   const url = process.env.SUPABASE_URL;
@@ -50,10 +51,15 @@ export async function getViewCount() {
 }
 
 export async function incrementViewCount() {
-  const rows = await supabaseRequest<SupabaseRpcRow[]>("/rpc/increment_view_count", {
+  const data = await supabaseRequest<SupabaseRpcResponse>("/rpc/increment_view_count", {
     method: "POST",
     body: "{}",
   });
 
-  return rows[0]?.increment_view_count ?? 0;
+  if (typeof data === "number") return data;
+
+  const first = Array.isArray(data) ? data[0] : data;
+  if (typeof first === "number") return first;
+
+  return first?.increment_view_count ?? 0;
 }
