@@ -4,12 +4,66 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
-  <title>Content Manager</title>
+  <title>DebugZi 内容后台</title>
   <style>
+    :root {
+      --admin-bg: #f5efe7;
+      --admin-panel: #fffaf4;
+      --admin-ink: #2d261f;
+      --admin-muted: #847466;
+      --admin-accent: #8d5b35;
+      --admin-border: #e1d3c4;
+      --admin-shadow: 0 18px 48px rgba(70, 46, 25, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      color: var(--admin-ink);
+      background:
+        linear-gradient(135deg, rgba(255, 250, 244, 0.96), rgba(244, 233, 220, 0.92)),
+        radial-gradient(circle at top left, rgba(141, 91, 53, 0.14), transparent 34%),
+        var(--admin-bg);
+      font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(45, 38, 31, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 38, 31, 0.025) 1px, transparent 1px);
+      background-size: 24px 24px;
+      mask-image: linear-gradient(to bottom, black, transparent 82%);
+      z-index: 0;
+    }
+
+    #root {
+      position: relative;
+      z-index: 1;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      border-radius: 8px !important;
+    }
+
+    input,
+    textarea,
+    select {
+      border-color: var(--admin-border) !important;
+    }
+
+    a {
+      color: var(--admin-accent);
     }
   </style>
 </head>
@@ -58,6 +112,8 @@
       },
       media_folder: "public/images",
       public_folder: "/images",
+      site_url: config.baseUrl,
+      display_url: config.baseUrl,
       locale: "zh_Hans",
       collections: [
         {
@@ -66,10 +122,17 @@
           label_singular: "文章",
           folder: "src/content/posts",
           create: true,
-          delete: true,
+          delete: false,
           extension: "mdx",
           format: "yaml-frontmatter",
           slug: "{{slug}}",
+          summary: "{{title}} — {{date}}",
+          preview_path: "/passage/{{slug}}",
+          editor: { preview: true },
+          sortable_fields: ["date", "title", "category"],
+          view_groups: [
+            { label: "分类", field: "category" }
+          ],
           fields: [
             { label: "标题", name: "title", widget: "string" },
             { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
@@ -93,10 +156,18 @@
           label_singular: "作品",
           folder: "src/content/works",
           create: true,
-          delete: true,
+          delete: false,
           extension: "mdx",
           format: "yaml-frontmatter",
           slug: "{{slug}}",
+          summary: "{{title}} — {{date}}",
+          preview_path: "/work/{{slug}}",
+          editor: { preview: true },
+          sortable_fields: ["date", "title", "category", "status"],
+          view_groups: [
+            { label: "分类", field: "category" },
+            { label: "状态", field: "status" }
+          ],
           fields: [
             { label: "标题", name: "title", widget: "string" },
             { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
@@ -117,106 +188,47 @@
           ]
         },
         {
-          name: "stars-website",
-          label: "收藏-网站",
-          label_singular: "网站",
+          name: "stars",
+          label: "收藏",
+          label_singular: "收藏",
           folder: "src/content/stars",
           create: true,
-          delete: true,
+          delete: false,
           extension: "mdx",
           format: "yaml-frontmatter",
           slug: "{{slug}}",
+          summary: "{{title}} — {{category}} — {{date}}",
+          preview_path: "/star/{{slug}}",
+          editor: { preview: true },
+          sortable_fields: ["date", "title", "category", "year"],
+          view_filters: [
+            { label: "网站", field: "category", pattern: "website" },
+            { label: "文章", field: "category", pattern: "article" },
+            { label: "工具", field: "category", pattern: "tool" },
+            { label: "音乐", field: "category", pattern: "music" },
+            { label: "影视", field: "category", pattern: "movie" },
+            { label: "书籍", field: "category", pattern: "book" }
+          ],
+          view_groups: [
+            { label: "类型", field: "category" }
+          ],
           fields: [
-            { label: "网站名称", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
-            { label: "一句话介绍", name: "description", widget: "text", required: false },
-            { label: "网址", name: "link", widget: "string", required: true }
-          ]
-        },
-        {
-          name: "stars-tool",
-          label: "收藏-工具",
-          label_singular: "工具",
-          folder: "src/content/stars",
-          create: true,
-          delete: true,
-          extension: "mdx",
-          format: "yaml-frontmatter",
-          slug: "{{slug}}",
-          fields: [
-            { label: "工具名称", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
-            { label: "一句话介绍", name: "description", widget: "text", required: false },
-            { label: "网址", name: "link", widget: "string", required: true }
-          ]
-        },
-        {
-          name: "stars-article",
-          label: "收藏-文章",
-          label_singular: "文章",
-          folder: "src/content/stars",
-          create: true,
-          delete: true,
-          extension: "mdx",
-          format: "yaml-frontmatter",
-          slug: "{{slug}}",
-          fields: [
-            { label: "文章标题", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
-            { label: "一句话介绍", name: "description", widget: "text", required: false },
-            { label: "文章链接", name: "link", widget: "string", required: true }
-          ]
-        },
-        {
-          name: "stars-music",
-          label: "收藏-音乐",
-          label_singular: "音乐",
-          folder: "src/content/stars",
-          create: true,
-          delete: true,
-          extension: "mdx",
-          format: "yaml-frontmatter",
-          slug: "{{slug}}",
-          fields: [
-            { label: "歌名", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
-            { label: "歌手名", name: "artist", widget: "string", required: true },
-            { label: "发布年份", name: "year", widget: "string", required: true }
-          ]
-        },
-        {
-          name: "stars-book",
-          label: "收藏-书籍",
-          label_singular: "书籍",
-          folder: "src/content/stars",
-          create: true,
-          delete: true,
-          extension: "mdx",
-          format: "yaml-frontmatter",
-          slug: "{{slug}}",
-          fields: [
-            { label: "书籍名", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
-            { label: "作者", name: "author", widget: "string", required: true },
-            { label: "发布年份", name: "year", widget: "string", required: true },
-            { label: "豆瓣链接", name: "douban_link", widget: "string", required: false }
-          ]
-        },
-        {
-          name: "stars-movie",
-          label: "收藏-影视",
-          label_singular: "影视",
-          folder: "src/content/stars",
-          create: true,
-          delete: true,
-          extension: "mdx",
-          format: "yaml-frontmatter",
-          slug: "{{slug}}",
-          fields: [
-            { label: "影视作品名", name: "title", widget: "string" },
-            { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
-            { label: "发布年份", name: "year", widget: "string", required: true },
-            { label: "豆瓣链接", name: "douban_link", widget: "string", required: false }
+            { label: "名称", name: "title", widget: "string" },
+            { label: "收藏日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
+            { label: "类型", name: "category", widget: "select", required: true, options: [
+              { label: "网站", value: "website" },
+              { label: "文章", value: "article" },
+              { label: "工具", value: "tool" },
+              { label: "音乐", value: "music" },
+              { label: "影视", value: "movie" },
+              { label: "书籍", value: "book" }
+            ]},
+            { label: "一句话介绍", name: "description", widget: "text", required: false, hint: "网站、文章、工具类常用。" },
+            { label: "网址 / 文章链接", name: "link", widget: "string", required: false, hint: "网站、文章、工具、音乐可填写外链。" },
+            { label: "歌手", name: "artist", widget: "string", required: false, hint: "音乐类填写。" },
+            { label: "作者", name: "author", widget: "string", required: false, hint: "书籍类填写。" },
+            { label: "年份", name: "year", widget: "string", required: false, hint: "音乐、影视、书籍类填写。" },
+            { label: "豆瓣链接", name: "douban_link", widget: "string", required: false, hint: "书籍、影视类可填写。" }
           ]
         },
         {
@@ -225,10 +237,12 @@
           label_singular: "句子",
           folder: "src/content/sentences",
           create: true,
-          delete: true,
+          delete: false,
           extension: "mdx",
           format: "yaml-frontmatter",
           slug: "{{slug}}",
+          summary: "{{title}} — {{date}}",
+          editor: { preview: true },
           fields: [
             { label: "句子内容", name: "title", widget: "string" },
             { label: "添加日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
@@ -243,10 +257,12 @@
           label_singular: "照片",
           folder: "src/content/photos",
           create: true,
-          delete: true,
+          delete: false,
           extension: "mdx",
           format: "yaml-frontmatter",
           slug: "{{slug}}",
+          summary: "{{title}} — {{date}}",
+          editor: { preview: true },
           fields: [
             { label: "标题", name: "title", widget: "string" },
             { label: "拍摄日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
@@ -254,9 +270,363 @@
             { label: "描述", name: "description", widget: "text", required: false },
             { label: "备注", name: "body", widget: "markdown", required: false }
           ]
+        },
+        {
+          name: "footprints",
+          label: "足迹",
+          label_singular: "足迹",
+          folder: "src/content/footprints",
+          create: true,
+          delete: false,
+          extension: "mdx",
+          format: "yaml-frontmatter",
+          slug: "{{slug}}",
+          summary: "{{place}} — {{date}}",
+          editor: { preview: true },
+          fields: [
+            { label: "地点", name: "place", widget: "string" },
+            { label: "时间", name: "date", widget: "string" },
+            { label: "说明", name: "note", widget: "text", required: false },
+            { label: "排序", name: "order", widget: "number", value_type: "int", default: 0, required: false },
+            { label: "备注", name: "body", widget: "markdown", required: false }
+          ]
+        },
+        {
+          name: "history",
+          label: "历史",
+          label_singular: "历史事件",
+          folder: "src/content/history",
+          create: true,
+          delete: false,
+          extension: "mdx",
+          format: "yaml-frontmatter",
+          slug: "{{slug}}",
+          summary: "{{title}} — {{date}}",
+          editor: { preview: true },
+          fields: [
+            { label: "标题", name: "title", widget: "string" },
+            { label: "日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
+            { label: "描述", name: "description", widget: "text", required: false },
+            { label: "备注", name: "body", widget: "markdown", required: false }
+          ]
+        },
+        {
+          name: "messages",
+          label: "留言",
+          label_singular: "留言",
+          folder: "src/content/messages",
+          create: false,
+          delete: false,
+          extension: "mdx",
+          format: "yaml-frontmatter",
+          slug: "{{slug}}",
+          summary: "{{name}} — {{date}}",
+          editor: { preview: true },
+          fields: [
+            { label: "称呼", name: "name", widget: "string", required: false },
+            { label: "联系方式", name: "contact", widget: "string", required: false },
+            { label: "留言时间", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm", date_format: "YYYY-MM-DD", time_format: "HH:mm" },
+            { label: "状态", name: "status", widget: "select", required: false, default: "未读", options: ["未读", "已读", "已回复"] },
+            { label: "留言内容", name: "body", widget: "markdown" }
+          ]
+        },
+        {
+          name: "archive",
+          label: "归档区",
+          folder: "src/content/archive/",
+          create: true,
+          delete: true,
+          extension: "mdx",
+          format: "yaml-frontmatter",
+          slug: "{{slug}}",
+          summary: "{{title}} - {{archivedAt}}",
+          editor: { preview: true },
+          fields: [
+            { label: "标题", name: "title", widget: "string" },
+            { label: "原始类型", name: "originalType", widget: "select", options: [
+              { label: "文章", value: "文章" },
+              { label: "作品", value: "作品" },
+              { label: "收藏", value: "收藏" },
+              { label: "一言", value: "一言" },
+              { label: "照片", value: "照片" }
+            ]},
+            { label: "归档日期", name: "archivedAt", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
+            { label: "原始内容", name: "body", widget: "markdown" }
+          ]
         }
       ]
     };
+
+    const h = window.h || (window.React && window.React.createElement) || (CMS && CMS.createElement);
+
+    const asText = (value, fallback = "") => {
+      if (value === undefined || value === null) return fallback;
+      if (typeof value === "string") return value;
+      if (typeof value === "number" || typeof value === "boolean") return String(value);
+      if (value && typeof value.toJS === "function") return value.toJS();
+      return fallback;
+    };
+
+    const getField = (entry, name, fallback = "") => asText(entry.getIn(["data", name]), fallback);
+
+    const formatDate = (value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value || "";
+      return date.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
+    };
+
+    const getBody = (widgetFor) => {
+      try {
+        return widgetFor("body");
+      } catch {
+        return null;
+      }
+    };
+
+    const categoryLabels = {
+      tech: "技术",
+      life: "生活",
+      thoughts: "思考",
+      monthly: "月刊",
+      misc: "杂项",
+      archive: "归档",
+      software: "软件项目",
+      website: "网站",
+      article: "文章",
+      tool: "工具",
+      music: "音乐",
+      movie: "影视",
+      book: "书籍"
+    };
+
+    const starIcons = {
+      website: "◎",
+      article: "¶",
+      tool: "◇",
+      music: "♪",
+      movie: "▣",
+      book: "□"
+    };
+
+    CMS.registerPreviewStyle(`
+      body {
+        margin: 0;
+        background: #f5efe7;
+        color: #2d261f;
+        font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+      }
+
+      .cms-preview-shell {
+        min-height: 100vh;
+        padding: 36px;
+        background:
+          linear-gradient(135deg, rgba(255, 250, 244, 0.96), rgba(244, 233, 220, 0.92)),
+          radial-gradient(circle at 12% 0%, rgba(141, 91, 53, 0.14), transparent 30%);
+      }
+
+      .cms-preview-card {
+        max-width: 760px;
+        margin: 0 auto;
+        border: 1px solid #e1d3c4;
+        border-radius: 8px;
+        background: rgba(255, 250, 244, 0.92);
+        box-shadow: 0 18px 48px rgba(70, 46, 25, 0.12);
+        padding: 34px;
+      }
+
+      .cms-preview-eyebrow {
+        margin: 0 0 14px;
+        color: #8d5b35;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      .cms-preview-title {
+        margin: 0;
+        color: #2d261f;
+        font-size: 34px;
+        line-height: 1.22;
+        letter-spacing: 0;
+      }
+
+      .cms-preview-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 18px 0 0;
+        color: #847466;
+        font-size: 13px;
+      }
+
+      .cms-preview-pill {
+        border: 1px solid #e1d3c4;
+        border-radius: 999px;
+        padding: 4px 10px;
+        background: #fff6eb;
+      }
+
+      .cms-preview-description {
+        margin: 20px 0 0;
+        color: #5e5147;
+        font-size: 16px;
+        line-height: 1.8;
+      }
+
+      .cms-preview-body {
+        margin-top: 28px;
+        color: #3b332b;
+        font-size: 16px;
+        line-height: 1.9;
+      }
+
+      .cms-preview-body h1,
+      .cms-preview-body h2,
+      .cms-preview-body h3 {
+        color: #2d261f;
+        line-height: 1.35;
+      }
+
+      .cms-preview-body img {
+        max-width: 100%;
+        border-radius: 8px;
+      }
+
+      .cms-preview-link {
+        margin-top: 18px;
+        overflow-wrap: anywhere;
+        color: #8d5b35;
+        font-size: 14px;
+      }
+
+      .cms-preview-star {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .cms-preview-star-icon {
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        border: 1px solid #e1d3c4;
+        border-radius: 8px;
+        background: #fff6eb;
+        color: #8d5b35;
+        font-size: 26px;
+      }
+    `, { raw: true });
+
+    const ArticlePreview = ({ entry, widgetFor }) => {
+      const title = getField(entry, "title", "未命名内容");
+      const date = getField(entry, "date");
+      const category = getField(entry, "category");
+      const description = getField(entry, "description");
+      const body = getBody(widgetFor);
+
+      return h("div", { className: "cms-preview-shell" },
+        h("article", { className: "cms-preview-card" },
+          h("p", { className: "cms-preview-eyebrow" }, "内容预览"),
+          h("h1", { className: "cms-preview-title" }, title),
+          h("div", { className: "cms-preview-meta" },
+            date && h("span", { className: "cms-preview-pill" }, formatDate(date)),
+            category && h("span", { className: "cms-preview-pill" }, categoryLabels[category] || category)
+          ),
+          description && h("p", { className: "cms-preview-description" }, description),
+          h("div", { className: "cms-preview-body" }, body)
+        )
+      );
+    };
+
+    const StarPreview = ({ entry }) => {
+      const title = getField(entry, "title", "未命名收藏");
+      const date = getField(entry, "date");
+      const category = getField(entry, "category", "website");
+      const description = getField(entry, "description");
+      const link = getField(entry, "link");
+      const doubanLink = getField(entry, "douban_link");
+      const artist = getField(entry, "artist");
+      const author = getField(entry, "author");
+      const year = getField(entry, "year");
+      const subtitle = [artist || author, year].filter(Boolean).join(" · ");
+      const url = link || doubanLink;
+
+      return h("div", { className: "cms-preview-shell" },
+        h("article", { className: "cms-preview-card cms-preview-star" },
+          h("div", { className: "cms-preview-star-icon" }, starIcons[category] || "☆"),
+          h("div", null,
+            h("p", { className: "cms-preview-eyebrow" }, `收藏 · ${categoryLabels[category] || category}`),
+            h("h1", { className: "cms-preview-title" }, title),
+            h("div", { className: "cms-preview-meta" },
+              date && h("span", { className: "cms-preview-pill" }, formatDate(date)),
+              subtitle && h("span", { className: "cms-preview-pill" }, subtitle)
+            ),
+            description && h("p", { className: "cms-preview-description" }, description),
+            url && h("p", { className: "cms-preview-link" }, url)
+          )
+        )
+      );
+    };
+
+    const SentencePreview = ({ entry, widgetFor }) => {
+      const title = getField(entry, "title", "写下一句话");
+      const author = getField(entry, "author");
+
+      return h("div", { className: "cms-preview-shell" },
+        h("article", { className: "cms-preview-card" },
+          h("p", { className: "cms-preview-eyebrow" }, "一言预览"),
+          h("h1", { className: "cms-preview-title" }, title),
+          author && h("p", { className: "cms-preview-description" }, `—— ${author}`),
+          h("div", { className: "cms-preview-body" }, getBody(widgetFor))
+        )
+      );
+    };
+
+    const PhotoPreview = ({ entry, widgetFor }) => {
+      const title = getField(entry, "title", "未命名照片");
+      const date = getField(entry, "date");
+      const image = getField(entry, "image");
+      const description = getField(entry, "description");
+
+      return h("div", { className: "cms-preview-shell" },
+        h("article", { className: "cms-preview-card" },
+          h("p", { className: "cms-preview-eyebrow" }, "照片预览"),
+          h("h1", { className: "cms-preview-title" }, title),
+          date && h("div", { className: "cms-preview-meta" }, h("span", { className: "cms-preview-pill" }, formatDate(date))),
+          image && h("div", { className: "cms-preview-body" }, h("img", { src: image, alt: title })),
+          description && h("p", { className: "cms-preview-description" }, description),
+          h("div", { className: "cms-preview-body" }, getBody(widgetFor))
+        )
+      );
+    };
+
+    const FootprintPreview = ({ entry, widgetFor }) => {
+      const place = getField(entry, "place", "未命名地点");
+      const date = getField(entry, "date");
+      const note = getField(entry, "note");
+
+      return h("div", { className: "cms-preview-shell" },
+        h("article", { className: "cms-preview-card" },
+          h("p", { className: "cms-preview-eyebrow" }, "足迹预览"),
+          h("h1", { className: "cms-preview-title" }, place),
+          date && h("div", { className: "cms-preview-meta" }, h("span", { className: "cms-preview-pill" }, date)),
+          note && h("p", { className: "cms-preview-description" }, note),
+          h("div", { className: "cms-preview-body" }, getBody(widgetFor))
+        )
+      );
+    };
+
+    CMS.registerPreviewTemplate("posts", ArticlePreview);
+    CMS.registerPreviewTemplate("works", ArticlePreview);
+    CMS.registerPreviewTemplate("stars", StarPreview);
+    CMS.registerPreviewTemplate("sentences", SentencePreview);
+    CMS.registerPreviewTemplate("photos", PhotoPreview);
+    CMS.registerPreviewTemplate("footprints", FootprintPreview);
+    CMS.registerPreviewTemplate("history", ArticlePreview);
+    CMS.registerPreviewTemplate("messages", ArticlePreview);
+    CMS.registerPreviewTemplate("archive", ArticlePreview);
 
     try {
       CMS.init({ config: cmsConfig });

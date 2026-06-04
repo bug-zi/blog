@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { siteConfig } from "@/lib/config";
 import { SequentialTypewriter } from "@/components/SequentialTypewriter";
 import { SocialLinks } from "@/components/SocialLinks";
@@ -13,9 +13,14 @@ export function HeroSection({ stats }: HeroSectionProps) {
   const [showAvatar, setShowAvatar] = useState(false);
   const [showTypewriter, setShowTypewriter] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
 
   const handleTypewriterComplete = () => {
     setShowStats(true);
+    // 动画完成后延迟移除滚动限制，让用户看到 stats 显示
+    setTimeout(() => {
+      setAnimationComplete(true);
+    }, 800);
   };
 
   const handleFirstLineComplete = () => {
@@ -26,6 +31,23 @@ export function HeroSection({ stats }: HeroSectionProps) {
   setTimeout(() => setShowAvatar(true), 100);
   // 打字机启动
   setTimeout(() => setShowTypewriter(true), 600);
+
+  // 动画播放期间禁止滚动
+  useEffect(() => {
+    if (!animationComplete) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+
+    // 组件卸载时恢复滚动
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [animationComplete]);
 
   return (
     <section className="flex flex-col items-center justify-center text-center min-h-screen py-16 relative">

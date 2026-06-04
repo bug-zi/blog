@@ -30,49 +30,60 @@ export function StarClient({ stars }: { stars: PostMeta[] }) {
       ? "全部"
       : categories.find((c) => c.slug === activeCategory)?.name ?? "全部";
 
-  const allOptions = [{ slug: "all", name: "全部" }, ...categories];
-
   return (
     <>
-      {/* Header: title centered, dropdown positioned to the right */}
-      <div className="relative mb-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-1">收藏</h1>
-          <p className="text-sm text-white/70">我的收藏清单</p>
+      {/* Header: title centered, filter button on the right */}
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="flex-1" />
+        <div className="flex-1 text-center">
+          <h1 className="text-2xl font-bold text-white mb-1">收藏</h1>
+          <p className="text-sm text-white/70">我喜欢的网站、文章、音乐和影视</p>
         </div>
-        <div className="absolute top-1/2 -translate-y-1/2 right-0" ref={ref}>
-          {/* Custom dropdown trigger */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="bg-black/30 backdrop-blur-md border border-white/10 rounded-lg py-2 px-4 text-sm text-white/80 hover:bg-black/40 hover:border-white/20 transition-colors text-center w-[6.5em] flex items-center justify-center gap-1"
-          >
-            {activeLabel}
-            <svg className={`w-3 h-3 text-white/50 transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-          </button>
-          {/* Dropdown panel — acrylic glass */}
-          {open && (
-            <div className="absolute top-full mt-1 left-0 w-full rounded-lg bg-black/50 backdrop-blur-xl border border-white/10 shadow-xl shadow-black/30 overflow-hidden z-50">
-              {allOptions.map((opt) => (
+        <div className="flex-1 flex justify-end" ref={ref}>
+          <div className="relative">
+            <button
+              onClick={() => setOpen(!open)}
+              className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-full py-2 px-5 text-sm text-white/90 hover:bg-white/15 hover:border-white/20 transition-all flex items-center gap-2"
+            >
+              {activeLabel}
+              <svg className={`w-4 h-4 text-white/50 transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {open && (
+              <div className="absolute top-full mt-2 right-0 w-32 rounded-xl bg-black/60 backdrop-blur-xl border border-white/10 shadow-xl overflow-hidden z-50">
                 <button
-                  key={opt.slug}
-                  onClick={() => { setActiveCategory(opt.slug); setOpen(false); }}
-                  className={`block w-full py-2 text-sm text-center transition-colors ${
-                    activeCategory === opt.slug
-                      ? "bg-white/15 text-white font-medium"
+                  onClick={() => { setActiveCategory("all"); setOpen(false); }}
+                  className={`block w-full py-2.5 text-sm text-center transition-colors ${
+                    activeCategory === "all"
+                      ? "bg-white/20 text-white font-medium"
                       : "text-white/70 hover:bg-white/10 hover:text-white"
                   }`}
                 >
-                  {opt.name}
+                  全部
                 </button>
-              ))}
-            </div>
-          )}
+                {categories.map((cat) => (
+                  <button
+                    key={cat.slug}
+                    onClick={() => { setActiveCategory(cat.slug); setOpen(false); }}
+                    className={`block w-full py-2.5 text-sm text-center transition-colors ${
+                      activeCategory === cat.slug
+                        ? "bg-white/20 text-white font-medium"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Star cards */}
       {filtered.length > 0 ? (
-        <div className="space-y-2">
+        <div>
           {filtered.map((star) => (
             <StarCard key={star.slug} star={star} />
           ))}

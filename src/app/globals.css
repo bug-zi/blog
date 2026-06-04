@@ -60,6 +60,18 @@ body {
   border-radius: 3px;
 }
 
+/* ===== Custom Cursor ===== */
+@media (pointer: fine) {
+  *:not(input):not(textarea):not([contenteditable="true"]) {
+    cursor: none !important;
+  }
+}
+@media (pointer: coarse) {
+  .custom-cursor-container {
+    display: none !important;
+  }
+}
+
 /* ===== MDX prose styles ===== */
 .prose {
   max-width: 768px;

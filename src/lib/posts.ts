@@ -15,6 +15,10 @@ export interface PostMeta {
   status?: string;
   url?: string;
   link?: string;
+  artist?: string;
+  author?: string;
+  year?: string;
+  douban_link?: string;
 }
 
 export interface SentenceMeta {
@@ -33,7 +37,33 @@ export interface PhotoMeta {
   description?: string;
 }
 
+export interface FootprintMeta {
+  slug: string;
+  place: string;
+  date: string;
+  note?: string;
+  order: number;
+}
+
+export interface HistoryMeta {
+  slug: string;
+  title: string;
+  date: string;
+  description?: string;
+}
+
 const CONTENT_DIR = path.join(process.cwd(), "src/content");
+
+function formatDateValue(value: unknown): string {
+  if (!value) return "";
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value);
+}
+
+function formatOrderValue(value: unknown): number {
+  const order = Number(value ?? 0);
+  return Number.isFinite(order) ? order : 0;
+}
 
 function readMdxFiles(subDir: string, type: PostMeta["type"]): PostMeta[] {
   const dir = path.join(CONTENT_DIR, subDir);
@@ -57,6 +87,10 @@ function readMdxFiles(subDir: string, type: PostMeta["type"]): PostMeta[] {
         status: data.status,
         url: data.url,
         link: data.link,
+        artist: data.artist,
+        author: data.author,
+        year: data.year,
+        douban_link: data.douban_link,
         type,
       };
     })
@@ -110,6 +144,10 @@ export function getPostBySlug(
       status: data.status,
       url: data.url,
       link: data.link,
+      artist: data.artist,
+      author: data.author,
+      year: data.year,
+      douban_link: data.douban_link,
       type: SUBDIR_TO_TYPE[subDir] ?? "post",
     },
     content,
@@ -175,4 +213,45 @@ export function getPhotos(): PhotoMeta[] {
       };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export function getFootprints(): FootprintMeta[] {
+  const dir = path.join(CONTENT_DIR, "footprints");
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"))
+    .map((filename) => {
+      const raw = fs.readFileSync(path.join(dir, filename), "utf-8");
+      const { data } = matter(raw);
+      return {
+        slug: filename.replace(/\.mdx?$/, ""),
+        place: data.place ?? data.title ?? filename,
+        date: formatDateValue(data.date),
+        note: data.note ?? data.description,
+        order: formatOrderValue(data.order),
+      };
+    })
+    .sort((a, b) => a.order - b.order);
+}
+
+export function getHistoryEvents(): HistoryMeta[] {
+  const dir = path.join(CONTENT_DIR, "history");
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"))
+    .map((filename) => {
+      const raw = fs.readFileSync(path.join(dir, filename), "utf-8");
+      const { data } = matter(raw);
+      return {
+        slug: filename.replace(/\.mdx?$/, ""),
+        title: data.title ?? filename,
+        date: formatDateValue(data.date),
+        description: data.description,
+      };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
 }

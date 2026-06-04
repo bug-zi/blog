@@ -6,6 +6,7 @@ import { ThemeInit } from "@/components/ThemeInit";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { FlyingBirds } from "@/components/FlyingBirds";
+import { CustomCursor } from "@/components/CustomCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
         <ThemeInit />
         <ThemeProvider>
           <FlyingBirds />
+          <CustomCursor />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

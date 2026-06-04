@@ -72,7 +72,7 @@ export function WorkClient({ works }: { works: PostMeta[] }) {
 
       {/* Project cards */}
       {filtered.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-x-12 gap-y-6">
           {filtered.map((work) => (
             <WorkCard key={work.slug} work={work} />
           ))}

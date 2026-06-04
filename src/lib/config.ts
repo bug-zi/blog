@@ -67,10 +67,12 @@ export const siteConfig = {
       { name: "归档", slug: "archive" },
     ],
     star: [
-      { name: "收藏网站", slug: "website" },
-      { name: "收藏文章", slug: "article" },
-      { name: "收藏音乐", slug: "music" },
-      { name: "收藏影视", slug: "movie" },
+      { name: "网站", slug: "website" },
+      { name: "文章", slug: "article" },
+      { name: "工具", slug: "tool" },
+      { name: "音乐", slug: "music" },
+      { name: "影视", slug: "movie" },
+      { name: "书籍", slug: "book" },
     ],
     work: [
       { name: "软件创作", slug: "software" },

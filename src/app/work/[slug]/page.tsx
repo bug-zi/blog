@@ -87,15 +87,6 @@ export default async function WorkDetailPage({
         <MDXRemote source={content} />
       </div>
 
-      {/* Footer nav */}
-      <div className="mt-16 pt-8 border-t border-border">
-        <Link
-          href="/work"
-          className="text-sm text-muted hover:text-accent transition-colors"
-        >
-          ← 返回作品列表
-        </Link>
-      </div>
     </article>
     </div>
   );
