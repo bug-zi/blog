@@ -6,19 +6,23 @@ import { WorkCard } from "@/components/WorkCard";
 import { HeroFade } from "@/components/HeroFade";
 import { ContentFadeIn } from "@/components/ContentFadeIn";
 import { HeroSection } from "@/components/HeroSection";
+import { getViewCount } from "@/lib/view-counter";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
   const posts = getPosts();
   const works = getWorks();
   const featuredPosts = getFeaturedPosts(3);
   const featuredWorks = getFeaturedWorks(2);
   const daysSinceStart = getDaysSinceStart(siteConfig.owner.startDate);
+  const viewCount = await getViewCount();
 
   const stats = [
     { label: "建站", value: `${daysSinceStart} 天` },
     { label: "作品", value: `${works.length} 个` },
     { label: "文章", value: `${posts.length} 篇` },
-    { label: "浏览", value: "0 次" },
+    { label: "浏览", value: `${viewCount} 次` },
   ];
 
   return (

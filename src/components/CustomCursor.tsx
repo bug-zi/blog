@@ -9,26 +9,28 @@ const DOT_SIZE = 8;
 const RING_SIZE = 32;
 const RING_HOVER_SIZE = 48;
 const LERP_FACTOR = 0.25;
+const RIPPLE_SIZE = 96;
+
+type Ripple = {
+  id: number;
+  x: number;
+  y: number;
+};
 
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [ripples, setRipples] = useState<Ripple[]>([]);
 
   const mousePos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
   const isHoveringRef = useRef(false);
   const rafId = useRef(0);
+  const rippleId = useRef(0);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-
     const isTouch =
       "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (isTouch) return;
@@ -61,10 +63,20 @@ export function CustomCursor() {
 
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
+    const handleMouseDown = (e: MouseEvent) => {
+      if (e.button !== 0) return;
+
+      const id = rippleId.current++;
+      setRipples((current) => [
+        ...current,
+        { id, x: e.clientX, y: e.clientY },
+      ]);
+    };
 
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mouseover", handleMouseOver, { passive: true });
     document.addEventListener("mouseout", handleMouseOut, { passive: true });
+    document.addEventListener("mousedown", handleMouseDown, { passive: true });
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
 
@@ -88,12 +100,11 @@ export function CustomCursor() {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
+      document.removeEventListener("mousedown", handleMouseDown);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
     };
-  }, [mounted, isVisible]);
-
-  if (!mounted) return null;
+  }, [isVisible]);
 
   return (
     <div
@@ -131,6 +142,32 @@ export function CustomCursor() {
           },
         }}
       />
+      {ripples.map((ripple) => (
+        <motion.div
+          key={ripple.id}
+          className="absolute top-0 left-0 rounded-full border border-white/70 bg-white/10 shadow-[0_0_24px_rgba(255,255,255,0.35)]"
+          initial={{
+            opacity: 0.6,
+            scale: 0.2,
+            x: ripple.x - RIPPLE_SIZE / 2,
+            y: ripple.y - RIPPLE_SIZE / 2,
+          }}
+          animate={{
+            opacity: 0,
+            scale: 1,
+          }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+          onAnimationComplete={() => {
+            setRipples((current) =>
+              current.filter((item) => item.id !== ripple.id)
+            );
+          }}
+          style={{
+            width: RIPPLE_SIZE,
+            height: RIPPLE_SIZE,
+          }}
+        />
+      ))}
     </div>
   );
 }

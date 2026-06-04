@@ -14,6 +14,7 @@ export function HeroSection({ stats }: HeroSectionProps) {
   const [showTypewriter, setShowTypewriter] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   const handleTypewriterComplete = () => {
     setShowStats(true);
@@ -48,6 +49,34 @@ export function HeroSection({ stats }: HeroSectionProps) {
       document.documentElement.style.overflow = "";
     };
   }, [animationComplete]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    fetch("/api/views", { method: "POST" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to update view count");
+        return response.json() as Promise<{ count?: number }>;
+      })
+      .then((data) => {
+        if (!ignore && typeof data.count === "number") {
+          setViewCount(data.count);
+        }
+      })
+      .catch(() => {
+        // Keep the server-rendered fallback value when counting fails.
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const displayStats = stats.map((stat) =>
+    stat.label === "浏览" && viewCount !== null
+      ? { ...stat, value: `${viewCount} 次` }
+      : stat
+  );
 
   return (
     <section className="flex flex-col items-center justify-center text-center min-h-screen py-16 relative">
@@ -100,7 +129,7 @@ export function HeroSection({ stats }: HeroSectionProps) {
       <div className={`flex gap-10 mb-10 transition-all duration-700 ${
         showStats ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       }`}>
-        {stats.map((stat) => (
+        {displayStats.map((stat) => (
           <div key={stat.label} className="text-center px-6 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
             <div className="text-xl font-semibold text-white">{stat.value}</div>
             <div className="text-xs text-white/60 mt-1">{stat.label}</div>
