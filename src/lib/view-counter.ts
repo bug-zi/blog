@@ -1,48 +1,59 @@
-import fs from "fs/promises";
-import path from "path";
-
-type ViewCounterData = {
+type SupabaseCountRow = {
   total: number;
 };
 
-const COUNTER_PATH = path.join(process.cwd(), ".data", "views.json");
+type SupabaseRpcRow = {
+  increment_view_count: number;
+};
 
-async function readCounter(): Promise<ViewCounterData> {
-  try {
-    const raw = await fs.readFile(COUNTER_PATH, "utf8");
-    const data = JSON.parse(raw) as Partial<ViewCounterData>;
-    const total = Number(data.total ?? 0);
+function getSupabaseConfig() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    return { total: Number.isFinite(total) ? total : 0 };
-  } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      error.code === "ENOENT"
-    ) {
-      return { total: 0 };
-    }
-
-    throw error;
+  if (!url || !key) {
+    throw new Error("Missing Supabase environment variables.");
   }
+
+  return {
+    restUrl: `${url.replace(/\/$/, "")}/rest/v1`,
+    key,
+  };
 }
 
-async function writeCounter(data: ViewCounterData) {
-  await fs.mkdir(path.dirname(COUNTER_PATH), { recursive: true });
-  await fs.writeFile(COUNTER_PATH, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+async function supabaseRequest<T>(path: string, init: RequestInit = {}) {
+  const { restUrl, key } = getSupabaseConfig();
+  const response = await fetch(`${restUrl}${path}`, {
+    ...init,
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      ...init.headers,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => response.statusText);
+    throw new Error(`Supabase request failed: ${response.status} ${detail}`);
+  }
+
+  return response.json() as Promise<T>;
 }
 
 export async function getViewCount() {
-  const data = await readCounter();
-  return data.total;
+  const rows = await supabaseRequest<SupabaseCountRow[]>(
+    "/site_stats?key=eq.home_views&select=total&limit=1"
+  );
+
+  return rows[0]?.total ?? 0;
 }
 
 export async function incrementViewCount() {
-  const data = await readCounter();
-  const next = { total: data.total + 1 };
+  const rows = await supabaseRequest<SupabaseRpcRow[]>("/rpc/increment_view_count", {
+    method: "POST",
+    body: "{}",
+  });
 
-  await writeCounter(next);
-
-  return next.total;
+  return rows[0]?.increment_view_count ?? 0;
 }

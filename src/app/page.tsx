@@ -16,7 +16,7 @@ export default async function HomePage() {
   const featuredPosts = getFeaturedPosts(3);
   const featuredWorks = getFeaturedWorks(2);
   const daysSinceStart = getDaysSinceStart(siteConfig.owner.startDate);
-  const viewCount = await getViewCount();
+  const viewCount = await getViewCount().catch(() => 0);
 
   const stats = [
     { label: "建站", value: `${daysSinceStart} 天` },
