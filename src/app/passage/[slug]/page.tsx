@@ -1,7 +1,7 @@
 import { getPostBySlug, getPosts } from "@/lib/posts";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { BackLink } from "@/components/BackLink";
 
 // Force rebuild - 2026-04-09 20:30
 
@@ -53,12 +53,12 @@ export default async function PassageDetailPage({
         <div className="absolute inset-0 rounded-2xl bg-background/80 dark:bg-background/70 backdrop-blur-sm" style={{ zIndex: -1 }} />
       {/* Header */}
       <header className="mb-12">
-        <Link
-          href="/passage"
+        <BackLink
+          fallbackHref="/passage"
           className="text-sm text-muted hover:text-accent transition-colors mb-6 inline-block"
         >
           ← 返回文章列表
-        </Link>
+        </BackLink>
         <h1 className="text-3xl font-bold mt-4 mb-3">{meta.title}</h1>
         <div className="flex items-center gap-3 text-sm text-muted">
           <time>
@@ -99,12 +99,12 @@ export default async function PassageDetailPage({
 
       {/* Footer nav */}
       <div className="mt-16 pt-8 border-t border-border">
-        <Link
-          href="/passage"
+        <BackLink
+          fallbackHref="/passage"
           className="text-sm text-muted hover:text-accent transition-colors"
         >
           ← 返回文章列表
-        </Link>
+        </BackLink>
       </div>
     </article>
     </div>

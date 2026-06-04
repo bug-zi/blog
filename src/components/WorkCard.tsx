@@ -3,7 +3,13 @@
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
 
-export function WorkCard({ work }: { work: PostMeta }) {
+export function WorkCard({
+  work,
+  fromHome = false,
+}: {
+  work: PostMeta;
+  fromHome?: boolean;
+}) {
   const handleCopy = (e: React.MouseEvent, url: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -11,7 +17,7 @@ export function WorkCard({ work }: { work: PostMeta }) {
   };
 
   return (
-    <Link href={`/work/${work.slug}`}>
+    <Link href={`/work/${work.slug}${fromHome ? "?from=home" : ""}`}>
       <article className="group rounded-lg border-b border-white/10 hover:bg-white/10 px-3 -mx-3 transition-all duration-200 p-4">
         {/* Title */}
         <h3 className="font-semibold text-white/90 group-hover:text-white transition-colors truncate text-lg">

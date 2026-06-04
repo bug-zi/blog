@@ -1,7 +1,13 @@
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
 
-export function PostCard({ post }: { post: PostMeta }) {
+export function PostCard({
+  post,
+  fromHome = false,
+}: {
+  post: PostMeta;
+  fromHome?: boolean;
+}) {
   // Map post type to route path
   const getRoutePath = () => {
     switch (post.type) {
@@ -16,7 +22,7 @@ export function PostCard({ post }: { post: PostMeta }) {
   };
 
   return (
-    <Link href={getRoutePath()}>
+    <Link href={`${getRoutePath()}${fromHome ? "?from=home" : ""}`}>
       <article className="group rounded-lg border-b border-white/10 hover:bg-white/10 px-3 -mx-3 transition-all duration-200 p-4 text-left">
         {post.cover && (
           <div className="mb-3 overflow-hidden rounded-lg">

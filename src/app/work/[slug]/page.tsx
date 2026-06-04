@@ -1,7 +1,7 @@
 import { getPostBySlug, getWorks } from "@/lib/posts";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { BackLink } from "@/components/BackLink";
 
 // Enable dynamic params for all slugs in dev mode
 export const dynamicParams = true;
@@ -43,12 +43,12 @@ export default async function WorkDetailPage({
         <div className="absolute inset-0 rounded-2xl bg-background/80 dark:bg-background/70 backdrop-blur-sm" style={{ zIndex: -1 }} />
       {/* Header */}
       <header className="mb-12">
-        <Link
-          href="/work"
+        <BackLink
+          fallbackHref="/work"
           className="text-sm text-muted hover:text-accent transition-colors mb-6 inline-block"
         >
           ← 返回作品列表
-        </Link>
+        </BackLink>
         <h1 className="text-3xl font-bold mt-4 mb-3">{meta.title}</h1>
         <div className="flex items-center gap-3 text-sm text-muted">
           <time>

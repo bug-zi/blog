@@ -63,7 +63,7 @@ export default function HomePage() {
               </div>
               <div className="grid gap-4">
                 {featuredWorks.map((work) => (
-                  <WorkCard key={work.slug} work={work} />
+                  <WorkCard key={work.slug} work={work} fromHome />
                 ))}
               </div>
             </div>
@@ -85,7 +85,7 @@ export default function HomePage() {
             <div className="grid gap-3">
               {featuredPosts.length > 0 ? (
                 featuredPosts.map((post) => (
-                  <PostCard key={post.slug} post={post} />
+                  <PostCard key={post.slug} post={post} fromHome />
                 ))
               ) : (
                 <p className="text-sm text-muted col-span-full">
@@ -114,7 +114,7 @@ export default function HomePage() {
                   {posts.slice(0, 5).map((post) => (
                     <Link
                       key={post.slug}
-                      href={`/passage/${post.slug}`}
+                      href={`/passage/${post.slug}?from=home`}
                       className="flex items-center justify-between py-3 border-b border-white/10 hover:bg-white/10 rounded-lg px-3 -mx-3 transition-all duration-200 group/link"
                     >
                       <span className="text-sm font-medium text-white transition-colors">
