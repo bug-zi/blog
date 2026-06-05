@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { BackLink } from "@/components/BackLink";
 import { getCategoryName } from "@/lib/config";
-import { HtmlReport } from "@/components/HtmlReport";
 
 // Force rebuild - 2026-04-09 20:30
 
@@ -98,7 +97,7 @@ export default async function PassageDetailPage({
 
       {/* Content */}
       <div className="prose">
-        <MDXRemote source={content} components={{ HtmlReport }} />
+        <MDXRemote source={content} />
       </div>
 
       {/* Footer nav */}
