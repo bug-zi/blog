@@ -422,11 +422,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 12px 0;
+      margin: 0 0 12px;
       padding: 12px 14px;
       border: 1px solid var(--admin-border);
       border-radius: 12px;
-      background: rgba(238, 241, 255, 0.74);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 20px 48px rgba(36, 54, 101, 0.18);
       color: var(--admin-ink);
       font-size: 13px;
     }
@@ -441,9 +442,55 @@
       box-shadow: 0 10px 22px rgba(64, 92, 245, 0.22);
     }
 
+    .document-import-button {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4d68ff, #3150e8);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 800;
+      padding: 0 14px;
+      box-shadow: 0 10px 22px rgba(64, 92, 245, 0.22);
+    }
+
     .document-import-panel span {
       color: var(--admin-muted);
       font-weight: 600;
+    }
+
+    .document-markdown-textarea {
+      width: 100%;
+      min-height: 440px;
+      resize: vertical;
+      border: 1px solid var(--admin-border) !important;
+      border-radius: 14px !important;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--admin-ink);
+      font: 14px/1.7 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      padding: 16px;
+      outline: none;
+    }
+
+    .document-markdown-preview {
+      white-space: pre-wrap;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      line-height: inherit;
+      padding: 0;
+    }
+
+    .document-html-preview {
+      width: 100%;
+      min-height: 72vh;
+      border: 0;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 18px 42px rgba(36, 54, 101, 0.12);
     }
 
     .archive-delete-toast {
@@ -943,7 +990,7 @@
             ]},
             { label: "标签", name: "tags", widget: "list", required: false },
             { label: "精选", name: "featured", widget: "boolean", default: false, required: false },
-            { label: "正文", name: "body", widget: "markdown" }
+            { label: "正文", name: "body", widget: "document_markdown" }
           ]
         },
         {
@@ -1518,6 +1565,83 @@
     CMS.registerPreviewTemplate("messages", ArticlePreview);
     CMS.registerPreviewTemplate("archive", ArticlePreview);
 
+    const wrapHtmlReport = (html) => `<HtmlReport html={${JSON.stringify(html)}} />`;
+
+    const getHtmlReportSource = (value = "") => {
+      const prefix = "<HtmlReport html={";
+      const suffix = "} />";
+      if (!value.startsWith(prefix) || !value.endsWith(suffix)) return "";
+
+      try {
+        return JSON.parse(value.slice(prefix.length, -suffix.length));
+      } catch {
+        return "";
+      }
+    };
+
+    const DocumentMarkdownControl = ({ value, onChange }) => {
+      const handleFileChange = async (event) => {
+        const file = event.target.files?.[0];
+        const statusElement = event.target.closest(".document-import-panel")?.querySelector("span");
+        if (!file) return;
+
+        try {
+          const text = await file.text();
+          const extension = file.name.split(".").pop()?.toLowerCase();
+          const content = extension === "html" || extension === "htm"
+            ? wrapHtmlReport(text)
+            : text;
+
+          onChange(content);
+          if (statusElement) statusElement.textContent = `已导入：${file.name}`;
+        } catch (error) {
+          if (statusElement) {
+            statusElement.textContent = error instanceof Error ? error.message : "导入失败。";
+          }
+        } finally {
+          event.target.value = "";
+        }
+      };
+
+      return h("div", null,
+        h("div", { className: "document-import-panel document-import-panel-inline" },
+          h("label", { className: "document-import-button" },
+            "导入 MD / HTML",
+            h("input", {
+              type: "file",
+              accept: ".md,.markdown,.html,.htm,text/markdown,text/html",
+              hidden: true,
+              onChange: handleFileChange
+            })
+          ),
+          h("span", null, "选择 .md、.markdown、.html 或 .htm 文件后会填入正文。")
+        ),
+        h("textarea", {
+          value: value || "",
+          onChange: (event) => onChange(event.target.value),
+          rows: 24,
+          className: "document-markdown-textarea",
+          placeholder: "在这里编写 Markdown 正文，或导入 MD / HTML 文件。"
+        })
+      );
+    };
+
+    const DocumentMarkdownPreview = ({ value }) => {
+      const html = getHtmlReportSource(value);
+
+      if (html) {
+        return h("iframe", {
+          title: "HTML report preview",
+          srcDoc: html,
+          className: "document-html-preview",
+          sandbox: "allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+        });
+      }
+
+      return h("pre", { className: "document-markdown-preview" }, value || "");
+    };
+
+    CMS.registerWidget("document_markdown", DocumentMarkdownControl, DocumentMarkdownPreview);
     const archiveDeleteCollections = [
       { name: "posts", label: "文章", folder: "src/content/posts" },
       { name: "works", label: "作品", folder: "src/content/works" },
@@ -1689,95 +1813,6 @@
         .trim();
     };
 
-    const setNativeValue = (element, value) => {
-      const prototype = Object.getPrototypeOf(element);
-      const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
-      descriptor?.set?.call(element, value);
-      element.dispatchEvent(new Event("input", { bubbles: true }));
-      element.dispatchEvent(new Event("change", { bubbles: true }));
-    };
-
-    const findBodyTextarea = () => {
-      const textareas = Array.from(document.querySelectorAll("textarea"));
-      return textareas.find((textarea) => {
-        const labelText = textarea.closest("label, div")?.textContent || "";
-        const name = textarea.getAttribute("name") || "";
-        return name === "body" || /正文|body/i.test(labelText);
-      }) || textareas[textareas.length - 1];
-    };
-
-    const importDocumentToBody = async (file) => {
-      const text = await file.text();
-      const extension = file.name.split(".").pop()?.toLowerCase();
-      const content = extension === "html" || extension === "htm"
-        ? htmlToMarkdown(text)
-        : text;
-      const textarea = findBodyTextarea();
-
-      if (!textarea) {
-        window.alert("未找到正文编辑框，请先打开文章编辑页。");
-        return;
-      }
-
-      setNativeValue(textarea, content);
-    };
-
-    const initDocumentImporter = () => {
-      const syncImporter = () => {
-        const isPostEditor = /\/collections\/posts\/entries\//.test(window.location.hash || window.location.pathname);
-        const existing = document.querySelector(".document-import-panel");
-
-        if (!isPostEditor) {
-          existing?.remove();
-          return;
-        }
-
-        if (existing) return;
-
-        const textarea = findBodyTextarea();
-        if (!textarea) return;
-
-        const panel = document.createElement("div");
-        panel.className = "document-import-panel";
-
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = ".md,.markdown,.html,.htm,text/markdown,text/html";
-        input.hidden = true;
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = "导入 MD / HTML";
-        button.addEventListener("click", () => input.click());
-
-        const hint = document.createElement("span");
-        hint.textContent = "选择 .md、.markdown、.html 或 .htm 文件后会填入正文。";
-
-        input.addEventListener("change", async () => {
-          const file = input.files?.[0];
-          if (!file) return;
-
-          try {
-            await importDocumentToBody(file);
-            hint.textContent = `已导入：${file.name}`;
-          } catch (error) {
-            window.alert(error instanceof Error ? error.message : "导入失败。");
-          } finally {
-            input.value = "";
-          }
-        });
-
-        panel.appendChild(input);
-        panel.appendChild(button);
-        panel.appendChild(hint);
-        textarea.insertAdjacentElement("beforebegin", panel);
-      };
-
-      window.addEventListener("hashchange", syncImporter);
-      new MutationObserver(syncImporter).observe(document.body, { childList: true, subtree: true });
-      syncImporter();
-    };
-
     const initArchiveDeletePanel = () => {
       const contextButton = document.getElementById("archiveDeleteContext");
       const toast = document.getElementById("archiveDeleteToast");
@@ -1931,7 +1966,6 @@
     };
 
     initArchiveDeletePanel();
-    initDocumentImporter();
 
     try {
       CMS.init({ config: cmsConfig });
