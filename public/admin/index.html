@@ -1565,18 +1565,9 @@
     CMS.registerPreviewTemplate("messages", ArticlePreview);
     CMS.registerPreviewTemplate("archive", ArticlePreview);
 
-    const wrapHtmlReport = (html) => `<HtmlReport html={${JSON.stringify(html)}} />`;
-
-    const getHtmlReportSource = (value = "") => {
-      const prefix = "<HtmlReport html={";
-      const suffix = "} />";
-      if (!value.startsWith(prefix) || !value.endsWith(suffix)) return "";
-
-      try {
-        return JSON.parse(value.slice(prefix.length, -suffix.length));
-      } catch {
-        return "";
-      }
+    const getReportFramePath = (value = "") => {
+      const match = value.match(/<ReportFrame\s+path=["']([^"']+)["']\s*\/>/);
+      return match?.[1] || "";
     };
 
     const DocumentMarkdownControl = ({ value, onChange }) => {
@@ -1586,17 +1577,36 @@
         if (!file) return;
 
         try {
-          const text = await file.text();
           const extension = file.name.split(".").pop()?.toLowerCase();
-          const content = extension === "html" || extension === "htm"
-            ? wrapHtmlReport(text)
-            : text;
+          let content = await file.text();
+
+          if (extension === "html" || extension === "htm") {
+            if (statusElement) statusElement.textContent = `?????${file.name}`;
+            const token = await getArchiveDeleteToken();
+            if (!token) throw new Error("?????????? HTML?");
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch("/api/admin/reports", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData
+            });
+
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(result.error || "HTML ?????");
+            }
+
+            content = result.markdown;
+          }
 
           onChange(content);
-          if (statusElement) statusElement.textContent = `已导入：${file.name}`;
+          if (statusElement) statusElement.textContent = `????${file.name}`;
         } catch (error) {
           if (statusElement) {
-            statusElement.textContent = error instanceof Error ? error.message : "导入失败。";
+            statusElement.textContent = error instanceof Error ? error.message : "?????";
           }
         } finally {
           event.target.value = "";
@@ -1606,7 +1616,7 @@
       return h("div", null,
         h("div", { className: "document-import-panel document-import-panel-inline" },
           h("label", { className: "document-import-button" },
-            "导入 MD / HTML",
+            "?? MD / HTML",
             h("input", {
               type: "file",
               accept: ".md,.markdown,.html,.htm,text/markdown,text/html",
@@ -1614,27 +1624,27 @@
               onChange: handleFileChange
             })
           ),
-          h("span", null, "选择 .md、.markdown、.html 或 .htm 文件后会填入正文。")
+          h("span", null, "MD ????????HTML ???? Supabase ??????")
         ),
         h("textarea", {
           value: value || "",
           onChange: (event) => onChange(event.target.value),
           rows: 24,
           className: "document-markdown-textarea",
-          placeholder: "在这里编写 Markdown 正文，或导入 MD / HTML 文件。"
+          placeholder: "????? Markdown ?????? MD / HTML ???"
         })
       );
     };
 
     const DocumentMarkdownPreview = ({ value }) => {
-      const html = getHtmlReportSource(value);
+      const reportPath = getReportFramePath(value);
 
-      if (html) {
+      if (reportPath) {
         return h("iframe", {
           title: "HTML report preview",
-          srcDoc: html,
+          src: `/api/admin/reports?path=${encodeURIComponent(reportPath)}`,
           className: "document-html-preview",
-          sandbox: "allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          sandbox: "allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
         });
       }
 
