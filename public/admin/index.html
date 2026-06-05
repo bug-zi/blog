@@ -1581,9 +1581,9 @@
           let content = await file.text();
 
           if (extension === "html" || extension === "htm") {
-            if (statusElement) statusElement.textContent = `?????${file.name}`;
+            if (statusElement) statusElement.textContent = `Uploading: ${file.name}`;
             const token = await getArchiveDeleteToken();
-            if (!token) throw new Error("?????????? HTML?");
+            if (!token) throw new Error("Please sign in before uploading HTML.");
 
             const formData = new FormData();
             formData.append("file", file);
@@ -1596,17 +1596,17 @@
 
             const result = await response.json().catch(() => ({}));
             if (!response.ok) {
-              throw new Error(result.error || "HTML ?????");
+              throw new Error(result.error || "HTML upload failed.");
             }
 
             content = result.markdown;
           }
 
           onChange(content);
-          if (statusElement) statusElement.textContent = `????${file.name}`;
+          if (statusElement) statusElement.textContent = `Imported: ${file.name}`;
         } catch (error) {
           if (statusElement) {
-            statusElement.textContent = error instanceof Error ? error.message : "?????";
+            statusElement.textContent = error instanceof Error ? error.message : "Import failed.";
           }
         } finally {
           event.target.value = "";
@@ -1616,7 +1616,7 @@
       return h("div", null,
         h("div", { className: "document-import-panel document-import-panel-inline" },
           h("label", { className: "document-import-button" },
-            "?? MD / HTML",
+            "Import MD / HTML",
             h("input", {
               type: "file",
               accept: ".md,.markdown,.html,.htm,text/markdown,text/html",
@@ -1624,14 +1624,14 @@
               onChange: handleFileChange
             })
           ),
-          h("span", null, "MD ????????HTML ???? Supabase ??????")
+          h("span", null, "MD is inserted directly. HTML is uploaded to Supabase and inserted as a reference.")
         ),
         h("textarea", {
           value: value || "",
           onChange: (event) => onChange(event.target.value),
           rows: 24,
           className: "document-markdown-textarea",
-          placeholder: "????? Markdown ?????? MD / HTML ???"
+          placeholder: "Write Markdown here, or import an MD / HTML file."
         })
       );
     };
