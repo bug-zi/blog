@@ -418,6 +418,34 @@
       vertical-align: middle;
     }
 
+    .document-import-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--admin-border);
+      border-radius: 12px;
+      background: rgba(238, 241, 255, 0.74);
+      color: var(--admin-ink);
+      font-size: 13px;
+    }
+
+    .document-import-panel button {
+      min-height: 38px !important;
+      border: 0;
+      background: linear-gradient(135deg, #4d68ff, #3150e8);
+      color: #fff !important;
+      cursor: pointer;
+      padding: 0 14px;
+      box-shadow: 0 10px 22px rgba(64, 92, 245, 0.22);
+    }
+
+    .document-import-panel span {
+      color: var(--admin-muted);
+      font-weight: 600;
+    }
+
     .archive-delete-toast {
       position: fixed;
       right: 24px;
@@ -1586,6 +1614,170 @@
       return "";
     };
 
+    const htmlToMarkdown = (html) => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const root = doc.body || doc;
+
+      const walk = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return node.textContent.replace(/\s+/g, " ");
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) return "";
+
+        const tag = node.tagName.toLowerCase();
+        const children = Array.from(node.childNodes).map(walk).join("").trim();
+
+        switch (tag) {
+          case "h1":
+            return `\n\n# ${children}\n\n`;
+          case "h2":
+            return `\n\n## ${children}\n\n`;
+          case "h3":
+            return `\n\n### ${children}\n\n`;
+          case "h4":
+            return `\n\n#### ${children}\n\n`;
+          case "h5":
+            return `\n\n##### ${children}\n\n`;
+          case "h6":
+            return `\n\n###### ${children}\n\n`;
+          case "p":
+            return `\n\n${children}\n\n`;
+          case "br":
+            return "\n";
+          case "strong":
+          case "b":
+            return `**${children}**`;
+          case "em":
+          case "i":
+            return `*${children}*`;
+          case "blockquote":
+            return `\n\n${children.split("\n").map((line) => `> ${line.trim()}`).join("\n")}\n\n`;
+          case "code":
+            return `\`${children}\``;
+          case "pre":
+            return `\n\n\`\`\`\n${node.textContent.trim()}\n\`\`\`\n\n`;
+          case "a": {
+            const href = node.getAttribute("href");
+            return href ? `[${children || href}](${href})` : children;
+          }
+          case "img": {
+            const src = node.getAttribute("src");
+            const alt = node.getAttribute("alt") || "";
+            return src ? `\n\n![${alt}](${src})\n\n` : "";
+          }
+          case "li":
+            return `\n- ${children}`;
+          case "ul":
+          case "ol":
+            return `\n${children}\n\n`;
+          case "script":
+          case "style":
+          case "meta":
+          case "link":
+            return "";
+          default:
+            return children;
+        }
+      };
+
+      return Array.from(root.childNodes)
+        .map(walk)
+        .join("")
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    };
+
+    const setNativeValue = (element, value) => {
+      const prototype = Object.getPrototypeOf(element);
+      const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
+      descriptor?.set?.call(element, value);
+      element.dispatchEvent(new Event("input", { bubbles: true }));
+      element.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+
+    const findBodyTextarea = () => {
+      const textareas = Array.from(document.querySelectorAll("textarea"));
+      return textareas.find((textarea) => {
+        const labelText = textarea.closest("label, div")?.textContent || "";
+        const name = textarea.getAttribute("name") || "";
+        return name === "body" || /正文|body/i.test(labelText);
+      }) || textareas[textareas.length - 1];
+    };
+
+    const importDocumentToBody = async (file) => {
+      const text = await file.text();
+      const extension = file.name.split(".").pop()?.toLowerCase();
+      const content = extension === "html" || extension === "htm"
+        ? htmlToMarkdown(text)
+        : text;
+      const textarea = findBodyTextarea();
+
+      if (!textarea) {
+        window.alert("未找到正文编辑框，请先打开文章编辑页。");
+        return;
+      }
+
+      setNativeValue(textarea, content);
+    };
+
+    const initDocumentImporter = () => {
+      const syncImporter = () => {
+        const isPostEditor = /\/collections\/posts\/entries\//.test(window.location.hash || window.location.pathname);
+        const existing = document.querySelector(".document-import-panel");
+
+        if (!isPostEditor) {
+          existing?.remove();
+          return;
+        }
+
+        if (existing) return;
+
+        const textarea = findBodyTextarea();
+        if (!textarea) return;
+
+        const panel = document.createElement("div");
+        panel.className = "document-import-panel";
+
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".md,.markdown,.html,.htm,text/markdown,text/html";
+        input.hidden = true;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "导入 MD / HTML";
+        button.addEventListener("click", () => input.click());
+
+        const hint = document.createElement("span");
+        hint.textContent = "选择 .md、.markdown、.html 或 .htm 文件后会填入正文。";
+
+        input.addEventListener("change", async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+
+          try {
+            await importDocumentToBody(file);
+            hint.textContent = `已导入：${file.name}`;
+          } catch (error) {
+            window.alert(error instanceof Error ? error.message : "导入失败。");
+          } finally {
+            input.value = "";
+          }
+        });
+
+        panel.appendChild(input);
+        panel.appendChild(button);
+        panel.appendChild(hint);
+        textarea.insertAdjacentElement("beforebegin", panel);
+      };
+
+      window.addEventListener("hashchange", syncImporter);
+      new MutationObserver(syncImporter).observe(document.body, { childList: true, subtree: true });
+      syncImporter();
+    };
+
     const initArchiveDeletePanel = () => {
       const contextButton = document.getElementById("archiveDeleteContext");
       const toast = document.getElementById("archiveDeleteToast");
@@ -1739,6 +1931,7 @@
     };
 
     initArchiveDeletePanel();
+    initDocumentImporter();
 
     try {
       CMS.init({ config: cmsConfig });
