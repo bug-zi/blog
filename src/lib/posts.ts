@@ -210,7 +210,7 @@ export function getPhotos(): PhotoMeta[] {
         title: data.title ?? filename,
         date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
         image: data.image ?? "",
-        url: data.url,
+        url: data.url ?? data.image,
         description: data.description,
       };
     })

@@ -1526,7 +1526,7 @@
       const title = getField(entry, "title", "未命名照片");
       const date = getField(entry, "date");
       const image = getField(entry, "image");
-      const url = getField(entry, "url");
+      const url = getField(entry, "url") || image;
       const description = getField(entry, "description");
 
       return h("div", { className: "cms-preview-shell" },
