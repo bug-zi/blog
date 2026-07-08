@@ -74,13 +74,23 @@ export function PhotoWallClient({ photos }: { photos: PhotoMeta[] }) {
               className="max-h-[85vh] w-auto max-w-full rounded-xl object-contain shadow-2xl"
               priority
             />
-            {(activePhoto.title || activePhoto.description) && (
+            {(activePhoto.title || activePhoto.description || activePhoto.url) && (
               <div className="mt-3 rounded-lg bg-black/60 px-4 py-3 text-white">
                 <h2 className="text-sm font-medium">{activePhoto.title}</h2>
                 {activePhoto.description && (
                   <p className="mt-1 text-xs text-white/70">
                     {activePhoto.description}
                   </p>
+                )}
+                {activePhoto.url && (
+                  <a
+                    href={activePhoto.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex rounded-md border border-white/20 px-3 py-1.5 text-xs text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  >
+                    打开链接
+                  </a>
                 )}
               </div>
             )}

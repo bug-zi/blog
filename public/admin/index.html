@@ -1112,6 +1112,7 @@
             { label: "标题", name: "title", widget: "string" },
             { label: "拍摄日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
             { label: "图片", name: "image", widget: "image" },
+            { label: "链接", name: "url", widget: "string", required: false },
             { label: "描述", name: "description", widget: "text", required: false },
             { label: "备注", name: "body", widget: "markdown", required: false }
           ]
@@ -1525,6 +1526,7 @@
       const title = getField(entry, "title", "未命名照片");
       const date = getField(entry, "date");
       const image = getField(entry, "image");
+      const url = getField(entry, "url");
       const description = getField(entry, "description");
 
       return h("div", { className: "cms-preview-shell" },
@@ -1533,6 +1535,7 @@
           h("h1", { className: "cms-preview-title" }, title),
           date && h("div", { className: "cms-preview-meta" }, h("span", { className: "cms-preview-pill" }, formatDate(date))),
           image && h("div", { className: "cms-preview-body" }, h("img", { src: image, alt: title })),
+          url && h("p", { className: "cms-preview-link" }, url),
           description && h("p", { className: "cms-preview-description" }, description),
           h("div", { className: "cms-preview-body" }, getBody(widgetFor))
         )

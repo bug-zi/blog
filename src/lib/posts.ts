@@ -34,6 +34,7 @@ export interface PhotoMeta {
   title: string;
   date: string;
   image: string;
+  url?: string;
   description?: string;
 }
 
@@ -209,6 +210,7 @@ export function getPhotos(): PhotoMeta[] {
         title: data.title ?? filename,
         date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
         image: data.image ?? "",
+        url: data.url,
         description: data.description,
       };
     })
